@@ -1,5 +1,3 @@
-.. _plot:
-
 Plot results
 ============
 

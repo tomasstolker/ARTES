@@ -1,7 +1,5 @@
-.. _compilation:
-
-Compilation
-===========
+Installation
+============
 
 ARTES has to be compiled with the GNU Fortran compiler which can for example be installed as: ::
 

@@ -1,5 +1,3 @@
-.. _input:
-
 Input files
 ===========
 

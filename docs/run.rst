@@ -1,7 +1,5 @@
-.. _run:
-
-Run ARTES
-=========
+Running ARTES
+=============
 
 To build the atmospheric structure with the atmosphere.in file: ::
 

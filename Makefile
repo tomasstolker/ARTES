@@ -69,6 +69,13 @@ install:
 	@echo
 	@echo ----------------------------------------------------
 	@echo
+	@echo Setting permission...
+	@echo
+	chmod 755 bin/ComputePartMac
+	chmod 755 bin/ComputePartLinux
+	@echo
+	@echo ----------------------------------------------------
+	@echo
 	@echo Finished!
 	@echo
 	@echo \####################################################
