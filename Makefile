@@ -38,8 +38,6 @@ install:
 	@echo
 	@echo Creating folders...
 	@echo
-	mkdir -p input/
-	mkdir -p output/
 	mkdir -p bin/
 	mkdir -p lib/
 	@echo
@@ -47,18 +45,18 @@ install:
 	@echo
 	@echo Downloading data...
 	@echo
-	wget -q --show-progress -O lib/libcfitsio.5.dylib https://people.phys.ethz.ch/~stolkert/ARTES/libcfitsio.5.dylib
-	wget -q --show-progress -O lib/libcfitsio.so.3 https://people.phys.ethz.ch/~stolkert/ARTES/libcfitsio.so.3
-	wget -q --show-progress -O dat/molecules/molecules.tar.gz https://people.phys.ethz.ch/~stolkert/ARTES/molecules.tar.gz
-	wget -q --show-progress -O bin/ComputePartMac https://people.phys.ethz.ch/~stolkert/ARTES/ComputePartMac
-	wget -q --show-progress -O bin/ComputePartLinux https://people.phys.ethz.ch/~stolkert/ARTES/ComputePartLinux
+	wget -q --show-progress -O lib/libcfitsio.5.dylib https://people.phys.ethz.ch/~stolkert/artes/libcfitsio.5.dylib
+	wget -q --show-progress -O lib/libcfitsio.so.3 https://people.phys.ethz.ch/~stolkert/artes/libcfitsio.so.3
+	wget -q --show-progress -O dat/molecules/molecules.tar.gz https://people.phys.ethz.ch/~stolkert/artes/molecules.tar.gz
+	wget -q --show-progress -O bin/computepart_mac https://people.phys.ethz.ch/~stolkert/artes/computepart_mac
+	wget -q --show-progress -O bin/computepart_linux https://people.phys.ethz.ch/~stolkert/artes/computepart_linux
 	@echo
 	@echo ----------------------------------------------------
 	@echo
 	@echo Compiling...
 	@echo
-	$(FC) $(FLAGS) -c src/ARTES.f90
-	$(FC) $(FLAGS) -o bin/ARTES ARTES.o $(LIBS)
+	$(FC) $(FLAGS) -c src/artes.f90
+	$(FC) $(FLAGS) -o bin/artes artes.o $(LIBS)
 	@echo
 	@echo ----------------------------------------------------
 	@echo
@@ -69,10 +67,10 @@ install:
 	@echo
 	@echo ----------------------------------------------------
 	@echo
-	@echo Setting permission...
+	@echo Setting permissions...
 	@echo
-	chmod 755 bin/ComputePartMac
-	chmod 755 bin/ComputePartLinux
+	chmod 700 bin/computepart_mac
+	chmod 700 bin/computepart_linux
 	@echo
 	@echo ----------------------------------------------------
 	@echo
@@ -81,7 +79,7 @@ install:
 	@echo \####################################################
 
 clean:
-	rm -f ARTES.o
+	rm -f artes.o
 	rm -rf docs/_build
 
 docs:

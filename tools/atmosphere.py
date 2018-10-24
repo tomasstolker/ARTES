@@ -1,37 +1,15 @@
+import os
+import sys
+import math
+
+import ConfigParser
 import numpy as np
-import ConfigParser, sys, os, math
+
 from astropy.io import fits
 from scipy.integrate import simps
 
-# ------------------------------------------------------------
-# Input
 
-atmosphere = sys.argv[1]
-
-# ------------------------------------------------------------
-
-directory = os.path.dirname(os.path.abspath(__file__))
-directory = directory[:-6]+'input/'+atmosphere+'/'
-
-if not os.path.exists(directory):
-    print 'The '+atmosphere+' folder is missing!'
-    answer = raw_input('Create folder '+atmosphere+'? [y/n]')
-    if answer == 'y':
-        if not os.path.exists(directory):
-            print 'Creating '+directory
-            os.makedirs(directory)
-        if not os.path.exists(directory+'opacity'):
-            print 'Creating '+directory+'opacity'
-            os.makedirs(directory+'opacity')
-        if not os.path.exists(directory+'plot'):
-            print 'Creating '+directory+'plot'
-            os.makedirs(directory+'plot')
-    sys.exit(0)
-
-try:
-    os.remove(directory+'atmosphere.fits')
-except OSError:
-    pass
+directory = os.path.join(sys.argv[1], '')
 
 # Normalize phase functions
 

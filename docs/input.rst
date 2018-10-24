@@ -1,82 +1,21 @@
 Input files
 ===========
 
-Folder structure
-----------------
+The working folder should contain the following files: ::
 
-All input files have to be located in the input folder of which the file structure is the following: ::
+  artes.in
+  atmosphere.in (optional)
+  atmosphere.fits (can be created with atmosphere.in)
+  pressure_temperature.dat (optional)
+  opacity/[FITS]
 
-  ARTES/input/[atmosphere]/artes.in
-  ARTES/input/[atmosphere]/atmosphere.in
-  ARTES/input/[atmosphere]/atmosphere.fits
-  ARTES/input/[atmosphere]/pressure_temperature.dat (optional)
-  ARTES/input/[atmosphere]/opacity/[opacityFITS]
+artes.in
+--------
 
-Where [atmosphere] is a user-defined name.
+This file contains the input parameters for ARTES. A full description of all possible keywords is provided in template/artes.in. Command line keywords can be provided with the '-k' flag which will overrule the input file keyword.
 
-Settings: artes.in
-------------------
-
-This file contains the input parameters for ARTES. A full description of all keywords is provided in the artes.in template file. Command line keywords can be provided with the '-k' flag which will overrule the input file keyword.
-
-Atmosphere: atmosphere.fits
----------------------------
-
-This FITS file contains the atmospheric structure and scattering properties. It should contain the following nine HDU extensions:
-
-  0. 1D Radial boundaries [m]
-  1. 1D Polar boundaries [deg]
-  2. 1D Azimuthal boundaries [deg]
-  3. 1D Wavelength points [micron]
-  4. 3D Density [kg m-3]
-  5. 3D Temperature [K]
-  6. 4D Scattering opacity [m-1]
-  7. 4D Absorption opacity [m-1]
-  8. 6D Scattering matrix
-  9. 4D Asymmetry parameter
-  
-To run ARTES, the atmosphere.fits and artes.in files are required. Additional tools are provided to help create the atmosphere.fits file.
-
-Pressure/temperature profile
-----------------------------
-
-A pressure-temperature profile can be provided in the [atmosphere] folder which is used by ARTES to determine the gas densities, mixing ratios, and absorption cross sections. The profile should be given in units of [bar] and [K] with increasing pressure.
-
-Opacities and scattering matrices
----------------------------------
-
-Several type of opacities can be generated. The opacity and scattering matrices need to be provided in a FITS format in which the first extension contains the wavelength dependent extinction, absorption, and scattering opacity, and the second extension contains the wavelength-dependent, 16-element scattering matrices.
-
-The python folder contains a few opacity tools:
-
-   1. opacity_henyey.py
-      Henyey-Greenstein scattering phase function.
-
-   2. opacity_rayleigh.py
-      Rayleigh scattering phase function.
-
-   3. opacity_gas.py
-      Gas opacities with Rayleigh scattering cross-section and wavelength dependent absorption coefficients.
-
-   4. opacity_molecules.py
-      Pressure temperature dependent gas opacities with equilibrium chemistry mixing ratios.
-
-   5. opacity_mie.py
-      Mie or DHS opacities and scattering matrices. This wrapper calls ComputePart (M. Min, SRON). Make sure that the ComputePart binary file is executable: ::
-
-        chmod 700 bin/ComputePart[Mac/Linux]
-        
-      In case a segmentation fault appears when running this routine, then try: ::
-      
-        ulimit -s unlimited
-
-   6. opacity_isotropic.py
-      Isotropic scattering phase function.
-
-All opacity FITS files should be located in the opacity folder.
-
-Create automatic input
-----------------------
+atmosphere.in
+-------------
 
 The atmosphere.in file has to be located in the [atmosphere] folder and its content should look something like: ::
 
@@ -112,3 +51,57 @@ A self-luminous circumplanetary disk can be added as: ::
 Make sure to use the following keyword in artes.in: ::
 
   planet:ring=on
+
+atmosphere.fits
+---------------
+
+This FITS file contains the atmospheric structure and scattering properties. It should contain the following nine HDU extensions:
+
+  0. 1D Radial boundaries [m]
+  1. 1D Polar boundaries [deg]
+  2. 1D Azimuthal boundaries [deg]
+  3. 1D Wavelength points [micron]
+  4. 3D Density [kg m-3]
+  5. 3D Temperature [K]
+  6. 4D Scattering opacity [m-1]
+  7. 4D Absorption opacity [m-1]
+  8. 6D Scattering matrix
+  9. 4D Asymmetry parameter
+  
+To run ARTES, the atmosphere.fits and artes.in files are required. Additional tools are provided to help create the atmosphere.fits file.
+
+pressure_temperature.dat
+------------------------
+
+A pressure-temperature profile can be provided in the [atmosphere] folder which is used by ARTES to determine the gas densities, mixing ratios, and absorption cross sections. The profile should be given in units of [bar] and [K] with increasing pressure.
+
+Scattering properties
+---------------------
+
+Several type of opacities can be generated. The opacity and scattering matrices need to be provided in a FITS format in which the first extension contains the wavelength dependent extinction, absorption, and scattering opacity, and the second extension contains the wavelength-dependent, 16-element scattering matrices.
+
+The python folder contains a few opacity tools:
+
+   1. opacity_henyey.py
+      Henyey-Greenstein scattering phase function.
+
+   2. opacity_rayleigh.py
+      Rayleigh scattering phase function.
+
+   3. opacity_gas.py
+      Gas opacities with Rayleigh scattering cross-section and wavelength dependent absorption coefficients.
+
+   4. opacity_molecules.py
+      Pressure temperature dependent gas opacities with equilibrium chemistry mixing ratios.
+
+   5. opacity_mie.py
+      Mie or DHS opacities and scattering matrices. This wrapper calls ComputePart M. Min, SRON).
+        
+      In case a segmentation fault appears when running this routine, then try: ::
+      
+        ulimit -s unlimited
+
+   6. opacity_isotropic.py
+      Isotropic scattering phase function.
+
+All opacity FITS files should be located in the opacity folder.

@@ -1,4 +1,5 @@
 bin/*
 lib/*
 dat/molecules/*
+docs/_build
 ARTES.o

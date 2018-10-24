@@ -1,17 +1,19 @@
 Installation
 ============
 
-ARTES has to be compiled with the GNU Fortran compiler which can for example be installed as: ::
+The GNU Fortran compiler has to be installed, for example: ::
 
     brew install gcc (Mac)
     sudo apt-get install gfortran (Linux)
 
-Make sure to export the library path: ::
+The library path should be exported as environment variable, for example: ::
 
-    export DYLD_LIBRARY_PATH="$DYLD_LIBRARY_PATH:$HOME/ARTES/lib" (Mac)
-    export LD_LIBRARY_PATH="$LD_LIBRARY_PATH:$HOME/ARTES/lib" (Linux)
+    export DYLD_LIBRARY_PATH="$DYLD_LIBRARY_PATH:$HOME/artes/lib" (Mac)
+    export LD_LIBRARY_PATH="$LD_LIBRARY_PATH:$HOME/artes/lib" (Linux)
 
-ARTES can be compiled from the main folder where the Makefile is located: ::
+ARTES can then be compiled with help of the Makefile: ::
 
     make install (Mac)
     make install linux=true (Linux)
+
+Note that during installation several files (14 MB) will be downloaded which are too large for Github.

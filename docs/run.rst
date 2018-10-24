@@ -3,8 +3,8 @@ Running ARTES
 
 To build the atmospheric structure with the atmosphere.in file: ::
 
-    python python/atmosphere.py [atmosphere]
+    python /path/to/tools/atmosphere.py atmosphere.in
 
 And to run the radiative transfer simulation: ::
 
-    ./bin/ARTES [atmosphere] [photons] -o [output] -k [keyword]=[value]
+    ./path/to/bin/ARTES [input] [photons] -o [output] -k [keyword]=[value]

@@ -8,4 +8,6 @@ Documentation for ARTES
    input
    run
    plot
-   examples  
+   examples
+   artes.in
+   atmosphere.in
