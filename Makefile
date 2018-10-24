@@ -42,6 +42,7 @@ start:
 	@echo
 	mkdir -p bin/
 	mkdir -p lib/
+	mkdir -p dat/molecules/
 	@echo
 	@echo ----------------------------------------------------
 
