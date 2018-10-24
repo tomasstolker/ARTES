@@ -1,3 +1,5 @@
+.. _index:
+
 Documentation for ARTES
 =======================
 
@@ -7,7 +9,6 @@ Documentation for ARTES
    installation
    input
    run
-   plot
    examples
    artes.in
    atmosphere.in

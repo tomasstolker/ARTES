@@ -108,8 +108,6 @@ program artes
   integer                   :: cell_depth                             ! Maximum cell depth to emit thermal photons
   real(dp)                  :: t_start, t_end
   character(100)            :: output_name
-  character(100)            :: atmosphere                             ! Atmosphere name
-  character(100)            :: atmosphere_directory                   ! Directory with atmosphere input files
   character(100)            :: input_file                             ! Input parameter file
   real(dp)                  :: package_energy                         ! Photon package energy [J]
   real(dp)                  :: x_fov, y_fov                           ! Field of view [mas]
@@ -289,8 +287,6 @@ contains
     
     det_dir = 0._dp
     phase_observer = 0._dp
-    atmosphere = ""
-    atmosphere_directory = ""
     input_file = ""
     package_energy = 0._dp
     i = 0
@@ -337,9 +333,7 @@ contains
     t_start = omp_get_wtime()
 
     ! Get input directory and number of photons
-    call argument_input(atmosphere)
-    atmosphere_directory = 'input/'//trim(atmosphere)
-    input_file = trim(atmosphere_directory)//'/artes.in'
+    call argument_input(input_file)
 
     ! Check if input file exists
     inquire (file=input_file, exist=file_exists)
@@ -392,13 +386,13 @@ contains
 
     ! Open error log
     if (debug) then
-       error_log = 'output/'//trim(output_name)//'/error.log'
+       error_log = trim(output_name)//'/error.log'
        open (11, file=trim(error_log), status="new")
        close (11)
     end if
 
     ! Open output log
-    if (log_file) open (10, file='output/'//trim(output_name)//'/output.log', status='new')
+    if (log_file) open (10, file=trim(output_name)//'/output.log', status='new')
 
     ! Random number generator
 
@@ -559,7 +553,7 @@ contains
        if (debug) then
           
           ! Check if error file is not becoming larger than 100 MB
-          call stat('output/'//trim(output_name)//'/error.log', buffer, status)
+          call stat(trim(output_name)//'/error.log', buffer, status)
           if (buffer(8).gt.1.e8_dp) then
              open (11, file=trim(error_log), position="append")
              write (11,*) "error 001"
@@ -1872,15 +1866,12 @@ contains
     integer, allocatable  :: naxes(:)
     real(dp), allocatable :: temp(:)
     logical               :: anynul
-    character(100)        :: fitsfile
 
     status = 0
     readwrite = 0
 
-    fitsfile  = trim(atmosphere_directory)//"/atmosphere.fits"
-
     call ftgiou(unit, status)
-    call ftopen(unit, fitsfile, readwrite, blocksize, status)
+    call ftopen(unit, "atmosphere.fits", readwrite, blocksize, status)
     call ftmahd(unit, 1, hdutype, status)
 
     ! Radial grid [m]
@@ -2297,17 +2288,15 @@ contains
 
        if (det_type.eq.2) then
 
-          inquire(file='output/'//adjustl(trim(output_name))//'/output/optical_depth.dat', exist=exist)
+          inquire(file=trim(output_name)//'/output/optical_depth.dat', exist=exist)
 
           if (exist) then
 
-             open (100, file='output/'//adjustl(trim(output_name))//'/output/optical_depth.dat', &
-                  status='old', position='append', action='write')
+             open (100, file=trim(output_name)//'/output/optical_depth.dat', status='old', position='append', action='write')
 
           else if (.not.exist) then
 
-             open (100, file='output/'//adjustl(trim(output_name))//'/output/optical_depth.dat', &
-                  status='new', action='write')
+             open (100, file=trim(output_name)//'/output/optical_depth.dat', status='new', action='write')
 
              write (100,*) "# Wavelength [micron] - Total optical depth - Absorption optical depth - Scattering optical depth"
              write (100,*)
@@ -3223,17 +3212,15 @@ contains
 
        ! Phase curve
 
-       inquire(file='output/'//adjustl(trim(output_name))//'/output/phase.dat', exist=exist)
+       inquire(file=trim(output_name)//'/output/phase.dat', exist=exist)
 
        if (exist) then
 
-          open (100, file='output/'//adjustl(trim(output_name))//'/output/phase.dat', &
-               status='old', position='append', action='write')
+          open (100, file=trim(output_name)//'/output/phase.dat', status='old', position='append', action='write')
 
        else if (.not.exist) then
 
-          open (100, file='output/'//adjustl(trim(output_name))//'/output/phase.dat', &
-               status='new', action='write')
+          open (100, file=trim(output_name)//'/output/phase.dat', status='new', action='write')
           write (100,*) "# Phase angle [deg] - Stokes I, Q, U, V [W m-2 micron-1]"
           write (100,*)
 
@@ -3274,8 +3261,7 @@ contains
 
        if (det_type.eq.1) then
 
-          open (100, file='output/'//adjustl(trim(output_name))//'/output/photometry.dat', &
-               status='new', action='write')
+          open (100, file=trim(output_name)//'/output/photometry.dat', status='new', action='write')
 
           write (100,*) "# Wavelength [micron] - Stokes I, Q, U, V [W m-2 micron-1]"
           write (100,*)
@@ -3293,17 +3279,15 @@ contains
 
        ! Spectrum
        
-       inquire(file='output/'//adjustl(trim(output_name))//'/output/spectrum.dat', exist=exist)
+       inquire(file=trim(output_name)//'/output/spectrum.dat', exist=exist)
 
        if (exist) then
 
-          open (100, file='output/'//adjustl(trim(output_name))//'/output/spectrum.dat', &
-               status='old', position='append', action='write')
+          open (100, file=trim(output_name)//'/output/spectrum.dat', status='old', position='append', action='write')
 
        else if (.not.exist) then
 
-          open (100, file='output/'//adjustl(trim(output_name))//'/output/spectrum.dat', &
-               status='new', action='write')
+          open (100, file=trim(output_name)//'/output/spectrum.dat', status='new', action='write')
 
           write (100,*) "# Wavelength [micron] - Stokes I, Q, U, V [W m-2 micron-1]"
           write (100,*)
@@ -3324,17 +3308,15 @@ contains
 
        if ((det_type.eq.3.and.det_phi.lt.pi/180._dp).or.det_type.eq.1.or.det_type.eq.2) then
 
-          inquire(file='output/'//adjustl(trim(output_name))//'/output/normalization.dat', exist=exist)
+          inquire(file=trim(output_name)//'/output/normalization.dat', exist=exist)
 
           if (exist) then
 
-             open (100, file='output/'//adjustl(trim(output_name))//'/output/normalization.dat', &
-                  status='old', position='append', action='write')
+             open (100, file=trim(output_name)//'/output/normalization.dat', status='old', position='append', action='write')
 
           else if (.not.exist) then
 
-             open (100, file='output/'//adjustl(trim(output_name))//'/output/normalization.dat', &
-                  status='new', action='write')
+             open (100, file=trim(output_name)//'/output/normalization.dat', status='new', action='write')
              write (100,*) "# Wavelength [micron] - Norm constant 1 [W m-2 micron-1] - Norm constant 2 [W m-2 micron-1]"
              write (100,*)
 
@@ -3361,16 +3343,15 @@ contains
        
        e_pack = emissivity_cumulative(nr-1,ntheta-1,nphi-1)/dble(packages)
 
-       inquire(file='output/'//trim(output_name)//'/output/luminosity.dat', exist=exist)
+       inquire(file=trim(output_name)//'/output/luminosity.dat', exist=exist)
 
        if (exist) then
           
-          open (100, file='output/'//trim(output_name)//'/output/luminosity.dat', &
-               status='old', position='append', action='write')
+          open (100, file=trim(output_name)//'/output/luminosity.dat', status='old', position='append', action='write')
           
        else if (.not.exist) then
 
-          open (100, file='output/'//trim(output_name)//'/output/luminosity.dat', status='new', action='write')
+          open (100, file=trim(output_name)//'/output/luminosity.dat', status='new', action='write')
 
           write (100,*) "# Wavelength [deg] - Emitted luminosity [W micron-1] - &
                & Emergent luminosity [W micron-1] - Emergent luminosity [a.u.]"
@@ -3388,16 +3369,15 @@ contains
 
     if (det_type.eq.1.or.det_type.eq.2) then
     
-       inquire(file='output/'//adjustl(trim(output_name))//'/output/cell_depth.dat', exist=exist)
+       inquire(file=trim(output_name)//'/output/cell_depth.dat', exist=exist)
 
        if (exist) then
           
-          open (100, file='output/'//adjustl(trim(output_name))//'/output/cell_depth.dat', &
-               status='old', position='append', action='write')
+          open (100, file=trim(output_name)//'/output/cell_depth.dat', status='old', position='append', action='write')
           
        else if (.not.exist) then
 
-          open (100, file='output/'//adjustl(trim(output_name))//'/output/cell_depth.dat', status='new', action='write')
+          open (100, file=trim(output_name)//'/output/cell_depth.dat', status='new', action='write')
 
           write (100,*) "# Wavelength [micron] - Cell depth"
           write (100,*)
@@ -3495,7 +3475,7 @@ contains
     fpixel = 1
     bitpix = -64
 
-    write (fits_path, "('!output/',(a),'/output/',(a))") trim(output_name), trim(filename)
+    write (fits_path, "((a),'/output/',(a))") trim(output_name), trim(filename)
 
     call ftgiou(unit, status)
     call ftinit(unit, trim(fits_path), blocksize, status)
@@ -3530,7 +3510,7 @@ contains
     fpixel = 1
     bitpix = -64
 
-    write (fits_path, "('!output/',(a),'/output/',(a))") trim(output_name), trim(filename)
+    write (fits_path, "((a),'/output/',(a))") trim(output_name), trim(filename)
 
     call ftgiou(unit, status)
     call ftinit(unit, trim(fits_path), blocksize, status)
@@ -3562,13 +3542,13 @@ contains
        write (out_unit,'(a)') "  Atmospheric Radiative Transfer for Exoplanet Science  "
        write (out_unit,'(a)') "                                                        "
        write (out_unit,'(a)') "    Please cite Stolker et al., 2017, A&A, 607, A42     "
-       write (out_unit,'(a)') "   whenever ARTES results are used in a publication.    "
+       write (out_unit,'(a)') " whenever results from ARTES are used in a publication. "
        write (out_unit,'(a)') ""
        write (out_unit,'(a)') "--------------------------------------------------------"
        write (out_unit,'(a)') ""
        write (out_unit,'(a)') "--> Initialization"
        write (out_unit,'(a)') ""
-       write (out_unit,'(a,a)') "Atmosphere: ", atmosphere
+       write (out_unit,'(a,a)') "Input file: ", input_file
        write (out_unit,'(a,i0)') "Computer cores: ", cores
        write (out_unit,'(a,i0)') "Threads in use: ", threads
        write (out_unit,'(a)') ""
@@ -3801,7 +3781,7 @@ contains
           if (file_exists) then
 
              open (100, file='mail.txt')
-             write (100,'(a,a,a,a,a)') "Job with input ", adjustl(trim(atmosphere)), " on ", &
+             write (100,'(a,a,a,a,a)') "Job with input ", adjustl(trim(input_file)), " on ", &
                   adjustl(trim(hostname)), " is finished."
              write (100,'(a)')
              write (100,'(a)') "Have a nice day!"
@@ -3925,25 +3905,25 @@ contains
        
   end subroutine random
 
-  subroutine argument_input(atmosphere)
+  subroutine argument_input(input_file)
 
     ! Check the command line arguments
 
-    character(100), intent(out) :: atmosphere
+    character(100), intent(out) :: input_file
     character(100)              :: dummy_char
-    real(dp                   ) :: dummy_dble
+    real(dp)                    :: dummy_dble
 
-    atmosphere = ""
+    input_file = ""
 
     if (iargc().le.3) then
        
        write (6,'(a)') "How to run ARTES:"
-       write (6,'(a)') "./bin/ARTES [inputDirectory] [photons] -o [outputDirectory] -k [keyWord]=[value]"
+       write (6,'(a)') "./path/to/bin/artes [input_file] [photons] -o [output_folder] -k [keyword]=[value]"
        call exit(0)
     
     else
 
-       call getarg(1, atmosphere)
+       call getarg(1, input_file)
        call getarg(2, dummy_char)
 
        read (dummy_char,*) dummy_dble
@@ -3969,24 +3949,22 @@ contains
           call get_command_argument(i+1, output_name)
 
           ! Make output directories
-          call system("rm -rf output/" // trim(output_name))
-          call system('mkdir -p output/' // trim(output_name) )
-          call system('mkdir -p output/' // trim(output_name) // '/input' )
-          call system('mkdir -p output/' // trim(output_name) // '/output' )
-          call system('mkdir -p output/' // trim(output_name) // '/plot' )
+          call system('rm -rf ' // trim(output_name))
+          call system('mkdir -p ' // trim(output_name) )
+          call system('mkdir -p ' // trim(output_name) // '/input' )
+          call system('mkdir -p ' // trim(output_name) // '/output' )
+          call system('mkdir -p ' // trim(output_name) // '/plot' )
 
           ! Copy input files to output directory
-          call system('cp '//adjustl(trim(input_file))//' output/'//adjustl(trim(output_name))//'/input/')
-          call system('cp '//trim(input_file(1:len_trim(input_file)-8)//'atmosphere.in')// &
-               ' output/'//adjustl(trim(output_name))//'/input/')
+          call system('cp '//adjustl(trim(input_file))//' '//adjustl(trim(output_name))//'/input/')
           call system('cp '//trim(input_file(1:len_trim(input_file)-8)//'atmosphere.fits')// &
-               ' output/'//adjustl(trim(output_name))//'/input/')
+               ' '//adjustl(trim(output_name))//'/input/')
           inquire(file=trim(input_file(1:len_trim(input_file)-8))//'atmosphere.dat', exist=exists)
           if (exists) call system('cp '//trim(input_file(1:len_trim(input_file)-8)//'atmosphere.dat')// &
-               ' output/'//adjustl(trim(output_name))//'/input/')
+               ' '//adjustl(trim(output_name))//'/input/')
           inquire(file=trim(input_file(1:len_trim(input_file)-8))//'pressure_temperature.dat', exist=exists)
           if (exists) call system('cp '//trim(input_file(1:len_trim(input_file)-8)//'pressure_temperature.dat')// &
-               ' output/'//adjustl(trim(output_name))//'/input/')
+               ' '//adjustl(trim(output_name))//'/input/')
           
        case ('-k')
           
@@ -3994,7 +3972,7 @@ contains
           call get_key_value(keyword_dummy, key_word, key_value)
           call input_parameters(key_word, key_value)
 
-          open (100, file='output/'//trim(output_name)//'/input/artes.in', status='old', position='append', action='write')
+          open (100, file=trim(output_name)//'/input/'//adjustl(trim(input_file)), status='old', position='append', action='write')
           write (100,*) new_line('a')//trim(keyword_dummy)
           close (100)
           

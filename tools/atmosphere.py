@@ -8,21 +8,20 @@ import numpy as np
 from astropy.io import fits
 from scipy.integrate import simps
 
-
-directory = os.path.join(sys.argv[1], '')
+directory = os.path.dirname(os.path.abspath(sys.argv[1]))+"/"
 
 # Normalize phase functions
 
-opacityDir = directory+'opacity/'
+opacity_dir = directory+"opacity/"
 
 angle = np.zeros(180)
 for i in range(180):
     angle[i] = (float(i)+0.5) * math.pi/180.
 
-for file in os.listdir(opacityDir):
+for file in os.listdir(opacity_dir):
     if file.endswith(".fits"):
 
-        fitsfile = opacityDir+file
+        fitsfile = opacity_dir+file
         hdulist = fits.open(fitsfile)
         wavelengths = int(hdulist[1].header['NAXIS1'])
         elements = int(hdulist[1].header['NAXIS2'])
@@ -76,9 +75,6 @@ for file in os.listdir(opacityDir):
         hdulist.close()
 
 # Read input file
-
-if not os.path.isfile(directory+'atmosphere.in'):
-    sys.exit('The atmosphere.in file is missing!')
 
 parser = ConfigParser.SafeConfigParser()
 parser.read(directory+'atmosphere.in')

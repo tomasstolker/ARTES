@@ -1,7 +1,9 @@
+.. _atmosphere.in:
+
 atmosphere.in
 =============
 
-This is an example of the available parameters in atmosphere.in: ::
+Here is an example of the available parameters for the input file that is required by tools/atmosphere.py. This file can have any name but is called atmosphere.in throughout the documentation.: ::
 
     [grid]
 

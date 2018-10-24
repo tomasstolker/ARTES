@@ -1,14 +1,21 @@
+import os
+import sys
+import math
+import shlex
+import subprocess
+
 import numpy as np
 import matplotlib.pyplot as plt
-import sys, os, math, shlex, subprocess
-from scipy.integrate import quad
-from scipy import interpolate
+
 from astropy.io import fits
+from scipy import interpolate
+from scipy.integrate import quad
 
 # ------------------------------------------------------------
 # Input
 
-atmosphere = sys.argv[1]
+PTfile = sys.argv[1]
+directory = os.path.dirname(os.path.abspath(sys.argv[1]))+"/"
 
 # Wavelength range [micron]
 wavelengthMin = 0.5
@@ -22,10 +29,8 @@ depolarization = 0.0
 
 # ------------------------------------------------------------
 
-scriptDir = os.path.dirname(os.path.abspath(__file__))
-directory = scriptDir[:-6]+'input/'+atmosphere+'/'
-opacityDir = scriptDir[:-6]+'dat/molecules/'
-PTfile = directory+'pressure_temperature.dat'
+dataDir = os.path.dirname(os.path.abspath(__file__))[:-6]+'/dat/molecules/'
+
 if not os.path.exists(directory+'opacity/'):
     os.makedirs(directory+'opacity/')
 
@@ -39,7 +44,7 @@ def getOpacity(filenumber):
     # Output:
     # Wavelength and opacity array
     
-    wl, op = np.loadtxt(opacityDir+'opacity_aver_'+str(int(filenumber)).zfill(4)+'.dat', unpack=True)
+    wl, op = np.loadtxt(dataDir+'opacity_aver_'+str(int(filenumber)).zfill(4)+'.dat', unpack=True)
     return wl, op
 
 def getPT(log_pressure_layer, temp_layer):
@@ -53,7 +58,7 @@ def getPT(log_pressure_layer, temp_layer):
     
     # Note that indices start at zero and filenames at 1
     
-    opacityPTlist = np.genfromtxt(opacityDir+'PTgrid.dat', skip_header=1)
+    opacityPTlist = np.genfromtxt(dataDir+'PTgrid.dat', skip_header=1)
     pressure_layer = 10.0**log_pressure_layer
     
     index_opac = opacityPTlist[::,0]
@@ -126,7 +131,7 @@ def interpolateOpacityFiles(pressure_layer, temp_layer, indices, opacity_array):
     # Output:
     # opacity array
     
-    opacityPTlist = np.genfromtxt(opacityDir+'PTgrid.dat', skip_header=1)
+    opacityPTlist = np.genfromtxt(dataDir+'PTgrid.dat', skip_header=1)
     
     p1 = opacityPTlist[indices[1]][1]
     p2 = opacityPTlist[indices[0]][1]
@@ -193,9 +198,7 @@ for i in range(len(pressureLog)):
 
 # Make FITS files
 
-scriptDir =  os.path.dirname(os.path.abspath(__file__))
-atmosphereDir = scriptDir[:-6]+'input/'+atmosphere+'/'
-opacityDir = scriptDir[:-6]+'input/'+atmosphere+'/opacity/'
+opacityDir = directory+'opacity/'
 
 avogadro = 6.02214129e23
 loschmidt = 2.6867805e19 # [cm-3]

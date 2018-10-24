@@ -1,22 +1,23 @@
+import os
+import sys
+import math
+
+import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.colors as mcolors
-import numpy as np
-import math, sys, os
 from astropy.io import fits
 
 # ------------------------------------------------------------
 # Input
 
-output = sys.argv[1]
+output = os.path.join(sys.argv[1], "")
 scaling = float(sys.argv[2])
 labelPol = float(sys.argv[3]) # [%]
 
 # ------------------------------------------------------------
 
-directory =  os.path.dirname(os.path.abspath(__file__))
-
-fitsDir = directory[:-6]+'output/'+output+'/output/'
-plotDir = directory[:-6]+'output/'+output+'/plot/'
+fitsDir = output+'output/'
+plotDir = output+'plot/'
 
 hdulist = fits.open(fitsDir+'stokes.fits')
 data = hdulist[0].data
@@ -52,8 +53,8 @@ fig = plt.imshow(stokesI, origin='lower', cmap='gist_heat', interpolation='neare
 cb = plt.colorbar(fig)
 cb.ax.set_ylabel('Surface brightness [W m$^{-2}$ micron$^{-1}$ mas$^{-2}$]')
 
-plt.xlabel('x offset')
-plt.ylabel('y offset')
+plt.xlabel('x offset', fontsize=12)
+plt.ylabel('y offset', fontsize=12)
 
 plt.savefig(plotDir+'image_I.pdf', bbox_inches='tight')
 plt.clf()
@@ -74,8 +75,8 @@ fig = plt.imshow(stokesQ, origin='lower', cmap=cmap, norm=norm, interpolation='n
 cb = plt.colorbar(fig)
 cb.ax.set_ylabel('Surface brightness [W m$^{-2}$ micron$^{-1}$ mas$^{-2}$]')
 
-plt.xlabel('x offset')
-plt.ylabel('y offset')
+plt.xlabel('x offset', fontsize=12)
+plt.ylabel('y offset', fontsize=12)
 
 plt.savefig(plotDir+'image_Q.pdf', bbox_inches='tight')
 plt.clf()
@@ -96,8 +97,8 @@ fig = plt.imshow(stokesU, origin='lower', cmap=cmap, norm=norm, interpolation='n
 cb = plt.colorbar(fig)
 cb.ax.set_ylabel('Surface brightness [W m$^{-2}$ micron$^{-1}$ mas$^{-2}$]')
 
-plt.xlabel('x offset')
-plt.ylabel('y offset')
+plt.xlabel('x offset', fontsize=12)
+plt.ylabel('y offset', fontsize=12)
 
 plt.savefig(plotDir+'image_U.pdf', bbox_inches='tight')
 plt.clf()
@@ -114,8 +115,8 @@ if abs(np.amax(stokesV)) > 0.:
     cb = plt.colorbar(fig)
     cb.ax.set_ylabel('Surface brightness [W m$^{-2}$ micron$^{-1}$ mas$^{-2}$]')
 
-    plt.xlabel('x offset')
-    plt.ylabel('y offset')
+    plt.xlabel('x offset', fontsize=12)
+    plt.ylabel('y offset', fontsize=12)
 
     plt.savefig(plotDir+'image_V.pdf', bbox_inches='tight')
     plt.clf()
@@ -137,8 +138,8 @@ fig = plt.imshow(errorI_frac, origin='lower', cmap='magma', interpolation='neare
 cb = plt.colorbar(fig)
 cb.ax.set_ylabel('Fractional error Stokes I')
 
-plt.xlabel('x offset')
-plt.ylabel('y offset')
+plt.xlabel('x offset', fontsize=12)
+plt.ylabel('y offset', fontsize=12)
 
 plt.savefig(plotDir+'error_I.pdf', bbox_inches='tight')
 plt.clf()
@@ -160,8 +161,8 @@ fig = plt.imshow(errorP_frac, origin='lower', cmap='magma', interpolation='neare
 cb = plt.colorbar(fig)
 cb.ax.set_ylabel('Fractional error degree of polarization')
 
-plt.xlabel('x offset')
-plt.ylabel('y offset')
+plt.xlabel('x offset', fontsize=12)
+plt.ylabel('y offset', fontsize=12)
 
 plt.savefig(plotDir+'error_P.pdf', bbox_inches='tight')
 plt.clf()
@@ -173,8 +174,8 @@ fig = plt.imshow(stokesI, origin='lower', cmap='gist_heat', interpolation='neare
 cb = plt.colorbar(fig)
 cb.ax.set_ylabel('Surface brightness [W m$^{-2}$ micron$^{-1}$ mas$^{-2}$]')
 
-plt.xlabel('x offset')
-plt.ylabel('y offset')
+plt.xlabel('x offset', fontsize=12)
+plt.ylabel('y offset', fontsize=12)
 
 k = int(npix/50.)+1
 m = int(k/2)

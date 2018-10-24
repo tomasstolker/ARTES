@@ -1,29 +1,29 @@
-import matplotlib.pyplot as plt
+import os
+import sys
+
 import numpy as np
-import sys, os
+import matplotlib.pyplot as plt
 
 # ------------------------------------------------------------
 # Input
 
-output = sys.argv[1]
+output = os.path.join(sys.argv[1], "")
 
 # ------------------------------------------------------------
 
-directory =  os.path.dirname(os.path.abspath(__file__))
-
-data = np.loadtxt(directory[:-6]+'output/'+output+'/output/spectrum.dat')
+data = np.loadtxt(output+'output/spectrum.dat')
 wavelength = data[:,0]
 flux = data[:,1]
 
 plt.plot(wavelength, flux, ls='-')
 
 plt.xlim(np.amin(wavelength),np.amax(wavelength))
-plt.ylim(1.e-30,1.e-11)
+plt.ylim(1.e-27,1.e-11)
 
 plt.xscale('log')
 plt.yscale('log')
 
-plt.xlabel('Wavelength [micron]')
-plt.ylabel('Flux [W/m$^2$/micron]')
+plt.xlabel('Wavelength [micron]', fontsize=12)
+plt.ylabel('Flux [W/m$^2$/micron]', fontsize=12)
 
-plt.savefig(directory[:-6]+'output/'+output+'/plot/spectrum_emission.pdf', bbox_inches='tight')
+plt.savefig(output+'plot/spectrum_emission.pdf', bbox_inches='tight')

@@ -1,3 +1,5 @@
+.. _installation:
+
 Installation
 ============
 
@@ -13,7 +15,7 @@ The library path should be exported as environment variable, for example: ::
 
 ARTES can then be compiled with help of the Makefile: ::
 
-    make install (Mac)
-    make install linux=true (Linux)
+    make all (Mac)
+    make all linux=true (Linux)
 
 Note that during installation several files (14 MB) will be downloaded which are too large for Github.

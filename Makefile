@@ -1,4 +1,4 @@
-.PHONY: help install clean docs
+.PHONY: help start data compile end download install all clean docs
 
 debug = false
 linux = false
@@ -21,11 +21,13 @@ else
 endif
 
 help:
+	@echo "all - download and install"
+	@echo "download - download required files"
 	@echo "install - install ARTES"
 	@echo "clean - remove artifacts"
 	@echo "docs - generate documentation"
 
-install:
+start:
 	@echo \####################################################
 	@echo \ \ \ \ \ \ \ \ \ \ \  _ \   \  ___ \  _____ \ \ ___ \ \ ___ 
 	@echo \ \ \ \ \ \ \ \ \ \   \/_\\  \  \| _ \\ \|_ \  _\| \| __\| \/ __\|
@@ -42,6 +44,8 @@ install:
 	mkdir -p lib/
 	@echo
 	@echo ----------------------------------------------------
+
+data:
 	@echo
 	@echo Downloading data...
 	@echo
@@ -50,13 +54,6 @@ install:
 	wget -q --show-progress -O dat/molecules/molecules.tar.gz https://people.phys.ethz.ch/~stolkert/artes/molecules.tar.gz
 	wget -q --show-progress -O bin/computepart_mac https://people.phys.ethz.ch/~stolkert/artes/computepart_mac
 	wget -q --show-progress -O bin/computepart_linux https://people.phys.ethz.ch/~stolkert/artes/computepart_linux
-	@echo
-	@echo ----------------------------------------------------
-	@echo
-	@echo Compiling...
-	@echo
-	$(FC) $(FLAGS) -c src/artes.f90
-	$(FC) $(FLAGS) -o bin/artes artes.o $(LIBS)
 	@echo
 	@echo ----------------------------------------------------
 	@echo
@@ -73,10 +70,27 @@ install:
 	chmod 700 bin/computepart_linux
 	@echo
 	@echo ----------------------------------------------------
+
+compile:
+	@echo
+	@echo Compiling...
+	@echo
+	$(FC) $(FLAGS) -c src/artes.f90
+	$(FC) $(FLAGS) -o bin/artes artes.o $(LIBS)
+	@echo
+	@echo ----------------------------------------------------
+
+end:
 	@echo
 	@echo Finished!
 	@echo
 	@echo \####################################################
+
+download: start data end
+
+install: start compile end
+
+all: start data compile end
 
 clean:
 	rm -f artes.o

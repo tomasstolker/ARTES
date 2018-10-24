@@ -1,7 +1,9 @@
+.. _artes.in:
+
 artes.in
 ========
 
-This is a list with all available keywords for the artes.in file: ::
+Here you find a list with all possible keywords for the input file that is required by ARTES. This file can have any name but is called artes.in throughout the documentation.: ::
 
     ----------------------------------------------------------------------
     * General
