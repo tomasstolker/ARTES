@@ -17,7 +17,7 @@ The first example simulates an Stokes I, Q, and U image in backward direction fr
 Phase curve from a Rayleigh scattering atmosphere
 -------------------------------------------------
 
-The second example simulates phase curve of a Rayleigh scattering atmosphere. That is, the disk-integrated flux along the different phases (i.e., scattering angles) of the planet. The images show the Stokes I flux (green) in comparison with Lambert surfaces (dasked lines) and the fractional polarization. The input files can be downloaded `here <https://people.phys.ethz.ch/~stolkert/artes/rayleigh.tar.gz>`__.
+The second example simulates phase curve of a Rayleigh scattering atmosphere. That is, the disk-integrated flux along the different phases (i.e., scattering angles) of the planet. The figures show the Stokes I flux and the fractional polarization. The input files can be downloaded `here <https://people.phys.ethz.ch/~stolkert/artes/rayleigh.tar.gz>`__.
 
 .. image:: _images/phase_curve_stokes_i.jpg
    :width: 70%
