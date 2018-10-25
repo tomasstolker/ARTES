@@ -8,20 +8,18 @@ from matplotlib.colors import LogNorm
 # ------------------------------------------------------------
 # Input
 
-output = sys.argv[1]
+output = os.path.join(sys.argv[1], "")
 azimuth = int(sys.argv[2])
 
 # ------------------------------------------------------------
 
-directory =  os.path.dirname(os.path.abspath(__file__))
-
-wavelength, cell_depth = np.loadtxt(directory[:-6]+'output/'+output+'/output/cell_depth.dat', unpack=True)
+wavelength, cell_depth = np.loadtxt(output+'output/cell_depth.dat', unpack=True)
 
 cell_depth = int(cell_depth)
 
 # Read grid cell faces
 
-hdulist = fits.open(directory[:-6]+'output/'+output+'/input/atmosphere.fits')
+hdulist = fits.open(output+'input/atmosphere.fits')
 r_face = hdulist[0].data # [m]
 t_face = hdulist[1].data # [deg]
 p_face = hdulist[2].data # [deg]
@@ -37,7 +35,7 @@ tt,rr = np.meshgrid(t_face, r_face[cell_depth+1:])
 
 # Read Latitudinal flow
 
-hdulist = fits.open(directory[:-6]+'output/'+output+'/output/latitudinal.fits')
+hdulist = fits.open(output+'output/latitudinal.fits')
 data = hdulist[0].data[azimuth]
 flow_up = data[:,:,0]
 flow_down = data[:,:,1]
@@ -81,7 +79,7 @@ plt.xticks(np.arange(90,-100,-30))
 plt.xlabel('Latitude [deg]')
 plt.ylabel('Altitude [km]')
 
-plt.savefig(directory[:-6]+'output/'+output+'/plot/flow_up.pdf', bbox_inches='tight')
+plt.savefig(output+'/plot/flow_up.pdf', bbox_inches='tight')
 plt.clf()
 
 # Plot down
@@ -101,7 +99,7 @@ plt.xticks(np.arange(90,-100,-30))
 plt.xlabel('Latitude [deg]')
 plt.ylabel('Altitude [km]')
 
-plt.savefig(directory[:-6]+'output/'+output+'/plot/flow_down.pdf', bbox_inches='tight')
+plt.savefig(output+'/plot/flow_down.pdf', bbox_inches='tight')
 plt.clf()
 
 # Plot south
@@ -121,7 +119,7 @@ plt.xticks(np.arange(90,-100,-30))
 plt.xlabel('Latitude [deg]')
 plt.ylabel('Altitude [km]')
 
-plt.savefig(directory[:-6]+'output/'+output+'/plot/flow_south.pdf', bbox_inches='tight')
+plt.savefig(output+'/plot/flow_south.pdf', bbox_inches='tight')
 plt.clf()
 
 # Plot north
@@ -141,7 +139,7 @@ plt.xticks(np.arange(90,-100,-30))
 plt.xlabel('Latitude [deg]')
 plt.ylabel('Altitude [km]')
 
-plt.savefig(directory[:-6]+'output/'+output+'/plot/flow_north.pdf', bbox_inches='tight')
+plt.savefig(output+'/plot/flow_north.pdf', bbox_inches='tight')
 plt.clf()
 
 # Plot ratio
@@ -186,4 +184,4 @@ plt.xticks(np.arange(90,-100,-30))
 plt.xlabel('Latitude [deg]')
 plt.ylabel('Altitude [km]')
 
-plt.savefig(directory[:-6]+'output/'+output+'/plot/flow_ratio.pdf', bbox_inches='tight')
+plt.savefig(output+'/plot/flow_ratio.pdf', bbox_inches='tight')

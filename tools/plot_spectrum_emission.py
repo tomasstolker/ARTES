@@ -11,6 +11,11 @@ output = os.path.join(sys.argv[1], "")
 
 # ------------------------------------------------------------
 
+plotDir = output+"plot/"
+
+if not os.path.exists(plotDir):
+    os.makedirs(plotDir)
+
 data = np.loadtxt(output+'output/spectrum.dat')
 wavelength = data[:,0]
 flux = data[:,1]
@@ -26,4 +31,4 @@ plt.yscale('log')
 plt.xlabel('Wavelength [micron]', fontsize=12)
 plt.ylabel('Flux [W/m$^2$/micron]', fontsize=12)
 
-plt.savefig(output+'plot/spectrum_emission.pdf', bbox_inches='tight')
+plt.savefig(plotDir'spectrum_emission.pdf', bbox_inches='tight')

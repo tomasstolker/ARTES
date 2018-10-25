@@ -1,20 +1,19 @@
-import matplotlib.pyplot as plt
+import os
+import sys
+
 import numpy as np
-import sys, os
-from palettable.colorbrewer.qualitative import Paired_10
+import matplotlib.pyplot as plt
+
 from astropy.io import fits
+from palettable.colorbrewer.qualitative import Paired_10
 
 # ------------------------------------------------------------
 # Input
 
-atmosphere = sys.argv[1]
+opacity = os.path.join(sys.argv[1], "")
 wavelength = int(sys.argv[2])
 
 # ------------------------------------------------------------
-
-directory =  os.path.dirname(os.path.abspath(__file__))
-opacityDir = directory[:-7]+'/input/'+atmosphere+'/opacity/'
-plotDir = directory[:-7]+'/input/'+atmosphere+'/plot/'
 
 angle = np.zeros(180)
 for i in range(180):
@@ -24,10 +23,10 @@ for i in range(180):
 
 j = 0
 
-for file in os.listdir(opacityDir):
+for file in os.listdir(opacity):
     if file.endswith(".fits") and not file.startswith("gas_opacity_"):
 
-	fitsfile = opacityDir+file
+	fitsfile = opacity+file
 	hdulist = fits.open(fitsfile)
 	data = hdulist[1].data
 	hdulist.close()
@@ -41,17 +40,17 @@ if j > 0:
     plt.xlim(0,180)
     plt.yscale('log')
     plt.legend(loc='upper right')
-    plt.savefig(plotDir+'phase_function.pdf', bbox_inches='tight')
+    plt.savefig(os.path.join(opacity, 'phase_function.pdf'), bbox_inches='tight')
     plt.clf()
 
 # Single scattering polarization
 
 j = 0
 
-for file in os.listdir(opacityDir):
+for file in os.listdir(opacity):
     if file.endswith(".fits") and not file.startswith("gas_opacity_"):
 
-    	fitsfile = opacityDir+file
+    	fitsfile = opacity+file
     	hdulist = fits.open(fitsfile)
     	data = hdulist[1].data
     	hdulist.close()
@@ -65,4 +64,4 @@ if j > 0:
     plt.ylabel('Single scattering polarization')
     plt.xlim(0,180)
     plt.legend(loc='upper left')
-    plt.savefig(plotDir+'polarization.pdf', bbox_inches='tight')
+    plt.savefig(os.path.join(opacity, 'polarization.pdf'), bbox_inches='tight')

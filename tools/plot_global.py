@@ -15,6 +15,9 @@ scale = float(sys.argv[3])
 directory =  os.path.dirname(os.path.abspath(__file__))
 plotDir = directory[:-6]+'output/'+output+'/plot/'
 
+if not os.path.exists(plotDir):
+    os.makedirs(plotDir)
+
 hdulist = fits.open(directory[:-6]+'output/'+output+'/input/atmosphere.fits')
 r_face = hdulist[0].data # [m]
 t_face = hdulist[1].data # [deg]

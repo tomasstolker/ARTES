@@ -19,6 +19,9 @@ labelPol = float(sys.argv[3]) # [%]
 fitsDir = output+'output/'
 plotDir = output+'plot/'
 
+if not os.path.exists(plotDir):
+    os.makedirs(plotDir)
+
 hdulist = fits.open(fitsDir+'stokes.fits')
 data = hdulist[0].data
 stokesI = data[0,:,:]

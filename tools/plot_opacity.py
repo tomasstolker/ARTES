@@ -1,23 +1,22 @@
-import matplotlib.font_manager as fm
+import os
+import sys
+
 import matplotlib.pyplot as plt
+import matplotlib.font_manager as fm
+
 import numpy as np
-import sys, os
 from astropy.io import fits
 
 # ------------------------------------------------------------
 # Input
 
-atmosphere = sys.argv[1]
+opacity = os.path.join(sys.argv[1], "")
 
 # ------------------------------------------------------------
 
-directory =  os.path.dirname(os.path.abspath(__file__))
-opacityDir = directory[:-6]+'input/'+atmosphere+'/opacity/'
-plotDir = directory[:-6]+'input/'+atmosphere+'/plot/'
-
 count = 0
     
-for file in os.listdir(opacityDir):
+for file in os.listdir(opacity):
     if file.endswith('.fits') and not "gas_opacity_" in file[:-5]:
         count = count + 1
 
@@ -25,10 +24,10 @@ colors = iter(plt.cm.rainbow(np.linspace(0,1,count)))
 
 j = 0
 
-for file in os.listdir(opacityDir):
+for file in os.listdir(opacity):
     if file.endswith('.fits'):
 
-        fitsfile = opacityDir+file
+        fitsfile = opacity+file
         
         hdulist = fits.open(fitsfile)
         hdu0 = hdulist[0]
@@ -79,4 +78,4 @@ plt.yscale('log')
 if count != j:
     plt.legend(loc='upper left')
 
-plt.savefig(plotDir+'opacity.pdf', bbox_inches='tight')
+plt.savefig(os.path.join(opacity, 'opacity.pdf'), bbox_inches='tight')

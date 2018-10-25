@@ -1,17 +1,15 @@
-import matplotlib.pyplot as plt
+import sys
 import numpy as np
-import sys, os
+import matplotlib.pyplot as plt
 
 # ------------------------------------------------------------
 # Input
 
-atmosphere = sys.argv[1]
+pt_profile = sys.argv[1]
 
 # ------------------------------------------------------------
 
-directory =  os.path.dirname(os.path.abspath(__file__))
-
-pressure, temperature = np.loadtxt(directory[:-6]+'input/'+atmosphere+'/pressure_temperature.dat', unpack=True)
+pressure, temperature = np.loadtxt('pressure_temperature.dat', unpack=True)
 
 plt.xlabel('Temperature [K]')
 plt.ylabel('Pressure [bar]')
@@ -19,8 +17,6 @@ plt.ylabel('Pressure [bar]')
 plt.gca().invert_yaxis()
 plt.yscale('log')
 
-plt.ylim(max(pressure), min(pressure))
-
 plt.plot(temperature, pressure, ls='-')
 
-plt.savefig(directory[:-6]+'input/'+atmosphere+'/plot/pressure_temperature.pdf', bbox_inches='tight')
+plt.savefig('pressure_temperature.pdf', bbox_inches='tight')

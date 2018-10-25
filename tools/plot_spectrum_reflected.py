@@ -14,6 +14,9 @@ output = os.path.join(sys.argv[1], "")
 plotDir = output+'plot/'
 dataDir = output+'output/'
 
+if not os.path.exists(plotDir):
+    os.makedirs(plotDir)
+
 wavelength, stokesi, stokesq, stokesu, stokesv = np.loadtxt(dataDir+'spectrum.dat', unpack=True)
 wavelength, norm1, norm2 = np.loadtxt(dataDir+'normalization.dat', unpack=True)
 
