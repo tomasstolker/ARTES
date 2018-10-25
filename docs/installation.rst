@@ -10,8 +10,8 @@ The GNU Fortran compiler has to be installed, for example: ::
 
 The library path should be exported as environment variable, for example: ::
 
-    export DYLD_LIBRARY_PATH="$DYLD_LIBRARY_PATH:$HOME/artes/lib" (Mac)
-    export LD_LIBRARY_PATH="$LD_LIBRARY_PATH:$HOME/artes/lib" (Linux)
+    export DYLD_LIBRARY_PATH="$DYLD_LIBRARY_PATH:$HOME/ARTES/lib" (Mac)
+    export LD_LIBRARY_PATH="$LD_LIBRARY_PATH:$HOME/ARTES/lib" (Linux)
 
 ARTES can then be compiled with help of the Makefile: ::
 
