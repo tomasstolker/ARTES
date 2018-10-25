@@ -42,7 +42,7 @@ Here you find a list with all possible keywords for the input file that is requi
     * 0 <= bias < 1
     photon:bias=0.8
 
-    * Modified random walk parameter, not fully implemented yet
+    * Modified random walk parameter
     * walk > 0 -> on
     * walk < 0 -> off
     photon:walk=-1
