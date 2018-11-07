@@ -82,22 +82,22 @@ Scattering properties
 
 Several type of opacities can be generated. The opacity and scattering matrices need to be provided in a FITS format in which the first extension contains the wavelength dependent extinction, absorption, and scattering opacity, and the second extension contains the wavelength-dependent, 16-element scattering matrices.
 
-The tools folder contains several tools to create the required FITS files for different particle types:
+The tools/opacity.py module contains several functions to create the required FITS files for different particle types:
 
-   1. opacity_henyey.py: Henyey-Greenstein scattering phase function.
+   1. opacity_henyey: Henyey-Greenstein scattering phase function.
 
-   2. opacity_rayleigh.py: Rayleigh scattering phase function.
+   2. opacity_rayleigh: Rayleigh scattering phase function.
 
-   3. opacity_gas.py: Gas opacities with Rayleigh scattering cross-section and wavelength dependent absorption coefficients.
+   3. opacity_gas: Gas opacities with Rayleigh scattering cross-section and wavelength dependent absorption coefficients.
 
-   4. opacity_molecules.py: Pressure temperature dependent gas opacities with equilibrium chemistry mixing ratios.
+   4. opacity_molecules: Pressure temperature dependent gas opacities with equilibrium chemistry mixing ratios.
 
-   5. opacity_mie.py: Mie or DHS opacities and scattering matrices. This wrapper calls ComputePart, a tool developed by `Michiel Min <http://www.michielmin.nl/>`__.
+   5. opacity_dhs: DHS or Mie opacities and scattering matrices. This wrapper calls ComputePart, a tool developed by `Michiel Min <http://www.michielmin.nl/>`__.
 
       In case a segmentation fault appears when running this routine, then try: ::
       
         ulimit -s unlimited
 
-   6. opacity_isotropic.py: Isotropic scattering phase function.
+   6. opacity_isotropic: Isotropic scattering phase function.
 
 All opacity FITS files should be located in the opacity folder.

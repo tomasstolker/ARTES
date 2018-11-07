@@ -96,6 +96,7 @@ all: start data compile end
 clean:
 	rm -f artes.o
 	rm -rf docs/_build
+	find . -name '*.pyc' -exec rm -f {} +
 
 docs:
 	sphinx-apidoc -o docs/ src

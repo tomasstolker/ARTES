@@ -4,3 +4,4 @@ dat/molecules/*
 docs/_build
 ARTES.o
 models/*
+*.py[cod]
