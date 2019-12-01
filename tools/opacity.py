@@ -519,7 +519,7 @@ def opacity_dhs(ri_file,
     f.write(str(percentage)+"\t"+str(density)+"\t"+str(amin)+"\t"+str(amax)+"\t"+str(apow)+"\t"+str(fmax))
     f.close()
 
-    os.chmod(computepart, 0700)
+    os.chmod(computepart, 700)
 
     if r_eff > 0.:
         os.system(computepart+" mie.in wavelength.dat "+str(r_eff)+" "+str(v_eff))

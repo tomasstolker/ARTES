@@ -1277,6 +1277,23 @@ contains
 
        end if
 
+    else if (photon_source.eq.3) then
+
+       ! Subsolar incidence
+
+       face_emission(1) = 1
+       face_emission(2) = nr
+
+       emission_direction(1) = -1._dp
+       emission_direction(2) = 0._dp
+       emission_direction(3) = 0._dp
+
+       x_emission = rfront(nr)
+       y_emission = 0._dp
+       z_emission = 0._dp
+
+       call initial_cell(x_emission, y_emission, z_emission, cell_emission)
+
     end if
 
   end subroutine emit_photon
@@ -1344,7 +1361,7 @@ contains
     real(dp), intent(in)  :: temperature
     real(dp), intent(out) :: flux
 
-    if (photon_source.eq.1) then
+    if ((photon_source.eq.1).or.(photon_source.eq.3)) then
 
        ! Planck function [W m-2 m-1]
        flux = (2._dp*pi*hh*cc*cc/(wavelength**5._dp)) / ( exp(hh*cc/(wavelength*k_b*temperature)) - 1._dp )
@@ -2063,7 +2080,7 @@ contains
     logical             :: exist
 
     if (tau_max.lt.0._dp) then
-       if (photon_source.eq.1) then
+       if ((photon_source.eq.1).or.(photon_source.eq.3)) then
           tau_max = 30._dp
        else if (photon_source.eq.2) then
           tau_max = 5._dp
@@ -2158,7 +2175,7 @@ contains
        ! Check at which radial depth the optical thickness is tau_max or larger
        ! Determine at which theta/phi location this is deepest in the atmosphere
        
-       if (photon_source.eq.1) then
+       if ((photon_source.eq.1).or.(photon_source.eq.3)) then
 
           if (photon_walk.lt.0._dp) then
           
@@ -2340,7 +2357,7 @@ contains
 
     real(dp) :: planck_flux
 
-    if (photon_source.eq.1) then
+    if ((photon_source.eq.1).or.(photon_source.eq.3)) then
     
        ! L_star = 4 * pi * R_star^2 * F_lambda = 4 * pi * D^2 * F_lambda,planet
        ! F_lambda,planet = F_lambda * R_star^2/D^2
@@ -3302,7 +3319,7 @@ contains
 
     end if
 
-    if (photon_source.eq.1) then
+    if ((photon_source.eq.1).or.(photon_source.eq.3)) then
 
        ! Flux normalization constants
 
@@ -3584,6 +3601,8 @@ contains
           write (out_unit,'(a,a)') "Photon source: star"
        else if (photon_source.eq.2) then
           write (out_unit,'(a,a)') "Photon source: planet"
+       else if (photon_source.eq.3) then
+          write (out_unit,'(a,a)') "Photon source: subsolar incidence"
        end if
        write (out_unit,'(a,es8.2)') "Emitted photons: ", dble(packages)
        write (out_unit,'(a)') ""
@@ -4069,6 +4088,8 @@ contains
           photon_source = 1
        else if (key_value.eq."planet") then
           photon_source = 2
+       else if (key_value.eq."subsolar") then
+          photon_source = 3
        end if
     case("photon:fstop")
        read (key_value, '(e50.0)') key_value_double
