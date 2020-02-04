@@ -9,7 +9,7 @@ from astropy.io import fits
 from scipy.integrate import simps
 
 
-directory = os.path.join(sys.argv[1], '')
+directory = os.path.dirname(os.path.abspath(sys.argv[1])) + '/'
 
 # Normalize phase functions
 
@@ -419,16 +419,15 @@ for m in range(nwav):
 
 # Write FITS output
 
-hdunew = fits.HDUList()
-hdunew.append(fits.ImageHDU(radial, name='radial'))  # [m]
-hdunew.append(fits.ImageHDU(theta, name='polar'))  # [deg]
-hdunew.append(fits.ImageHDU(phi, name='azimuthal'))  # [deg]
-hdunew.append(fits.ImageHDU(wavelengths, name='wavelength'))  # [micron]
-hdunew.append(fits.ImageHDU(density, name='density'))  # [kg m-3]
-hdunew.append(fits.ImageHDU(temperatureGrid, name='temperature'))  # [K]
-hdunew.append(fits.ImageHDU(opacityScattering, name='scattering'))  # [m-1]
-hdunew.append(fits.ImageHDU(opacityAbsorption, name='absorption'))  # [m-1]
-hdunew.append(fits.ImageHDU(scatter, name='scattermatrix'))
-hdunew.append(fits.ImageHDU(asymmetry, name='asymmetry'))
-hdunew.writeto(directory+'atmosphere.fits', overwrite=True)
-hdunew.close()
+with fits.HDUList() as hdunew:
+    hdunew.append(fits.ImageHDU(radial, name='radial'))  # [m]
+    hdunew.append(fits.ImageHDU(theta, name='polar'))  # [deg]
+    hdunew.append(fits.ImageHDU(phi, name='azimuthal'))  # [deg]
+    hdunew.append(fits.ImageHDU(wavelengths, name='wavelength'))  # [micron]
+    hdunew.append(fits.ImageHDU(density, name='density'))  # [kg m-3]
+    hdunew.append(fits.ImageHDU(temperatureGrid, name='temperature'))  # [K]
+    hdunew.append(fits.ImageHDU(opacityScattering, name='scattering'))  # [m-1]
+    hdunew.append(fits.ImageHDU(opacityAbsorption, name='absorption'))  # [m-1]
+    hdunew.append(fits.ImageHDU(scatter, name='scattermatrix'))
+    hdunew.append(fits.ImageHDU(asymmetry, name='asymmetry'))
+    hdunew.writeto(directory+'atmosphere.fits', overwrite=True)

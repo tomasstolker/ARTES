@@ -27,6 +27,6 @@ Please cite `Stolker et al., 2017, A&A, 607, A42 <http://adsabs.harvard.edu/abs/
 License
 -------
 
-Copyright 2018 Tomas Stolker
+Copyright 2018-2020 Tomas Stolker
 
 ARTES is free software and distributed under the GNU General Public License v3.

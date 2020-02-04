@@ -20,7 +20,7 @@
 # -- Project information -----------------------------------------------------
 
 project = u'ARTES'
-copyright = u'2018, Tomas Stolker'
+copyright = u'2018-2020, Tomas Stolker'
 author = u'Tomas Stolker'
 
 # The short X.Y version
