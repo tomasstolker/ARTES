@@ -6,7 +6,7 @@ ARTES
 .. image:: https://readthedocs.org/projects/artes/badge/?version=latest
     :target: http://artes.readthedocs.io/en/latest/?badge=latest
 
-.. image:: https://img.shields.io/badge/License-GPLv3-blue.svg
+.. image:: https://img.shields.io/badge/license-MIT-blue.svg?style=flat
     :target: https://github.com/tomasstolker/ARTES/blob/master/LICENSE
 
 .. image:: http://img.shields.io/badge/arXiv-1706.09427-orange.svg?style=flat
@@ -29,4 +29,4 @@ License
 
 Copyright 2018-2020 Tomas Stolker
 
-ARTES is free software and distributed under the GNU General Public License v3.
+ARTES is distributed under the MIT License. See the LICENSE file for the terms and conditions.
