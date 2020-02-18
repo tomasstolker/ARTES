@@ -31,4 +31,4 @@ plt.yscale('log')
 plt.xlabel('Wavelength [micron]', fontsize=12)
 plt.ylabel('Flux [W/m$^2$/micron]', fontsize=12)
 
-plt.savefig(plotDir'spectrum_emission.pdf', bbox_inches='tight')
+plt.savefig(plotDir+'spectrum_emission.pdf', bbox_inches='tight')

@@ -581,7 +581,7 @@ def opacity_dhs(ri_file,
     hdulist.close()
 
 def opacity_molecules(pt_file,
-                      wavelength=(0.5, 20.0),
+                      wavel_range=(0.5, 20.0),
                       mmw=2.3,
                       depolarization=0.0):
     """
@@ -850,7 +850,7 @@ def opacity_molecules(pt_file,
             #     return sigma
 
             for i in range(len(wavelength)):
-                if wavelength[i] >= wavelength[0]:
+                if wavelength[i] >= wavel_range[0]:
                     # Rayleigh cross section [cm2]
                     ri = refractiveIndexH2(wavelength[i])
                     rindex = (ri*ri-1.)*(ri*ri-1.)/((ri*ri+2.)*(ri*ri+2.))
@@ -862,7 +862,7 @@ def opacity_molecules(pt_file,
                     list_abs.append(absorption[i])
                     list_ext.append(crossSection/mass+absorption[i])
 
-                    if wavelength[i] > wavelength[1]:
+                    if wavelength[i] > wavel_range[1]:
                         break
 
             opacity = np.zeros((4, len(list_wl)))
@@ -903,3 +903,22 @@ def opacity_molecules(pt_file,
     for file in os.listdir(opacityDir):
         if file.startswith('absorption_') and file.endswith('.dat'):
             os.remove(opacityDir+file)
+
+if __name__ == '__main__':
+    if sys.argv[1] == 'rayleigh':
+        opacity_rayleigh(sys.argv[2])
+
+    if sys.argv[1] == 'isotropic':
+        opacity_isotropic(sys.argv[2])
+
+    if sys.argv[1] == 'henyey-greenstrein':
+        opacity_henyey_greenstein(sys.argv[2])
+
+    if sys.argv[1] == 'gas':
+        opacity_gas(sys.argv[2])
+
+    if sys.argv[1] == 'dhs':
+        opacity_dhs(sys.argv[2])
+
+    elif sys.argv[1] == 'molecules':
+        opacity_molecules(sys.argv[2])
