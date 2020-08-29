@@ -1,7 +1,7 @@
-import os
-import sys
 import math
+import os
 import shutil
+import sys
 
 import numpy as np
 
@@ -11,27 +11,31 @@ from scipy.interpolate import interp1d
 
 
 def opacity_rayleigh(wavelength,
-                     output="rayleigh.fits",
+                     output='rayleigh.fits',
                      albedo=1.,
                      depolarization=0.,
                      mmw=2.02):
     """
     Function to create constant opacities with Rayleigh scattering matrix.
 
-    :param wavelength: FITS filename that contains the wavelength points or a tuple with
-                       the minimum wavelength (micron), maximum wavelength (micron), and number
-                       of equally spaced wavelength points.
-    :type wavelength: str or (float, float, int)
-    :param output: Output FITS file name.
-    :type output: str
-    :param albedo: Single scattering albedo
-    :type albedo: float
-    :param depolarization: Depolarization factor.
-    :type depolarization: float
-    :param mmw: Mean molecular weight of scattering gas (g/mol).
-    :type mmw: float
+    Parameters
+    ----------
+    wavelength : str, tuple(float, float, int)
+        FITS filename that contains the wavelength points or a tuple with the minimum wavelength
+        (micron), maximum wavelength (um), and number of equally spaced wavelength points.
+    output : str
+        Output FITS file name.
+    albedo : float
+        Single scattering albedo.
+    depolarization : float
+        Depolarization factor.
+    mmw : float
+        Mean molecular weight of scattering gas (g/mol).
 
-    :return: None
+    Returns
+    -------
+    NoneType
+        None
     """
 
     if isinstance(wavelength, str):
@@ -127,25 +131,30 @@ def opacity_rayleigh(wavelength,
     hdulist.writeto(output, overwrite=True)
     hdulist.close()
 
+
 def opacity_isotropic(wavelength,
-                      output="isotropic.fits",
+                      output='isotropic.fits',
                       absorption=0.5,
                       scattering=1.0):
     """
     Function to create constant opacities with isotropic scattering matrix.
 
-    :param wavelength: FITS filename that contains the wavelength points or a tuple with
-                       the minimum wavelength (micron), maximum wavelength (micron), and number
-                       of equally spaced wavelength points.
-    :type wavelength: str or (float, float, int)
-    :param output: Output FITS file name.
-    :type output: str
-    :param absorption: Absorption opacity (cm2 g-1).
-    :type absorption: float
-    :param scattering: Scattering opacity (cm2 g-1).
-    :type scattering: float
+    Parameters
+    ----------
+    wavelength : str, tuple(float, float, int)
+        FITS filename that contains the wavelength points or a tuple with the minimum wavelength
+        (um), maximum wavelength (micron), and number of equally spaced wavelength points.
+    output : str
+        Output FITS file name.
+    absorption : float
+        Absorption opacity (cm2 g-1).
+    scattering : float
+        Scattering opacity (cm2 g-1).
 
-    :return: None
+    Returns
+    -------
+    NoneType
+        None
     """
 
     if isinstance(wavelength, str):
@@ -180,8 +189,9 @@ def opacity_isotropic(wavelength,
     hdulist.writeto(output, overwrite=True)
     hdulist.close()
 
+
 def opacity_henyey_greenstein(wavelength,
-                              output="henyey.fits",
+                              output='henyey.fits',
                               absorption=0.5,
                               scattering=1.0,
                               g=(0.8, 0., 0.,),
@@ -190,24 +200,28 @@ def opacity_henyey_greenstein(wavelength,
     """
     Function to create constant opacities with Henyey-Greenstein scattering matrix.
 
-    :param wavelength: FITS filename that contains the wavelength points or a tuple with
-                       the minimum wavelength (micron), maximum wavelength (micron), and number
-                       of equally spaced wavelength points.
-    :type wavelength: str or (float, float, int)
-    :param output: Output FITS file name.
-    :type output: str
-    :param absorption: Absorption opacity (cm2 g-1).
-    :type absorption: float
-    :param scattering: Scattering opacity (cm2 g-1).
-    :type scattering: float
-    :param g: Asymmetry parameters of the three Henyey-Greenstein functions.
-    :type g: (float, float, float)
-    :param weight: Weights for the Henyey-Greenstein functions.
-    :type weight: (float, float, float)
-    :param p_linear: Peak of the fractional polarization.
-    :type p_linear: float
+    Parameters
+    ----------
+    wavelength : str, tuple(float, float, int)
+        FITS filename that contains the wavelength points or a tuple with the minimum wavelength
+        (um), maximum wavelength (micron), and number of equally spaced wavelength points.
+    output : str
+        Output FITS file name.
+    absorption : float
+        Absorption opacity (cm2 g-1).
+    scattering : float
+        Scattering opacity (cm2 g-1).
+    g : tuple(float, float, float)
+        Asymmetry parameters of the three Henyey-Greenstein functions.
+    weight : tuple(float, float, float)
+        Weights for the Henyey-Greenstein functions.
+    p_linear : float
+        Peak of the fractional polarization.
 
-    :return: None
+    Returns
+    -------
+    NoneType
+        None
     """
 
     p_circular = 0.0
@@ -281,9 +295,10 @@ def opacity_henyey_greenstein(wavelength,
     hdulist.writeto(output, overwrite=True)
     hdulist.close()
 
+
 def opacity_gas(abs_file,
                 wavelength=None,
-                output="gas.fits",
+                output='gas.fits',
                 vmr=1.8e-3,
                 mmw_abs=16.04,
                 mmw_scat=2.02,
@@ -291,25 +306,29 @@ def opacity_gas(abs_file,
     """
     Function to create wavelength dependent opacities with Rayleigh scattering matrix.
 
-    :param abs_file: ASCII file that contains the wavelength dependent absorption coefficients.
-    :type abs_file: str
-    :param wavelength: Tuple with the minimum wavelength (micron), maximum wavelength (micron),
-                       and number of equally spaced wavelength points. The wavelengths from the
-                       absorption coefficients file are used if the number of points is set to
-                       None.
-    :type wavelength: (float, float, int)
-    :param output: Output FITS file name.
-    :type output: str
-    :param vmr: Volume mixing ratio of absorbing molecule.
-    :type vmr: float
-    :param mmw_abs: Mean molecular weight of absorbing gas (g/mol).
-    :type mmw_abs: float
-    :param mmw_scat: Mean molecular weight of scattering gas (g/mol).
-    :type mmw_scat: float
-    :param depolarization: Depolarization factor.
-    :type depolarization: float
+    Parameters
+    ----------
+    abs_file : str
+        ASCII file that contains the wavelength dependent absorption coefficients.
+    wavelength : tuple(float, float, int)
+        Tuple with the minimum wavelength (micron), maximum wavelength (micron), and number of
+        equally spaced wavelength points. The wavelengths from the absorption coefficients file
+        are used if the number of points is set to None.
+    output : str
+        Output FITS file name.
+    vmr : float
+        Volume mixing ratio of absorbing molecule.
+    mmw_abs : float
+        Mean molecular weight of absorbing gas (g/mol).
+    mmw_scat : float
+        Mean molecular weight of scattering gas (g/mol).
+    depolarization : float
+        Depolarization factor.
 
-    :return: None
+    Returns
+    -------
+    NoneType
+        None
     """
 
     if wavelength[2] is not None:
@@ -420,9 +439,10 @@ def opacity_gas(abs_file,
     hdulist.writeto(output, overwrite=True)
     hdulist.close()
 
+
 def opacity_dhs(ri_file,
                 wavelength=None,
-                output="dhs.fits",
+                output='dhs.fits',
                 nr=100,
                 nf=20,
                 density=1.,
@@ -435,36 +455,40 @@ def opacity_dhs(ri_file,
     """
     Function to create DHS opacities and scattering matrices.
 
-    :param ri_file: ASCII file that contains the wavelength dependent complex refractive index.
-    :type ri_file: str
-    :param wavelength: FITS filename that contains the wavelength points or a tuple with
-                       the minimum wavelength (micron), maximum wavelength (micron), and number
-                       of equally spaced wavelength points. The wavelengths from the refractive
-                       index file are used if the number of points is set to None.
-    :type wavelength: str or (float, float, int)
-    :param output: Output FITS file name.
-    :type output: str
-    :param nr: Number of radius points.
-    :type nr: int
-    :param nf: Number of volume fractions for distribution of hollow spheres (DHS).
-    :type nf: int
-    :param density: Particle density (g cm-3).
-    :type density: float
-    :param amin: Minimum particle size (micron).
-    :type amin: float
-    :param amax: Maximum particle size (micron).
-    :type amax: float
-    :param apow: Size distribution power law index
-    :type apow: float
-    :param fmax: Irregularity parameter, maximum volume void fraction for DHS. Setting fmax to 0
-                 equals Mie theory.
-    :type fmax: float
-    :param r_eff: Effective radius (micron), overrules amin, amax, apow.
-    :type r_eff: float
-    :param v_eff: Effective variance (dimensionless), overrules amin, amax, apow.
-    :type v_eff: float
+    Parameters
+    ----------
+    ri_file : str
+        ASCII file that contains the wavelength dependent complex refractive index.
+    wavelength: str, tuple(float, float, int)
+        FITS filename that contains the wavelength points or a tuple with the minimum wavelength
+        (um), maximum wavelength (micron), and number of equally spaced wavelength points. The
+        wavelengths from the refractive index file are used if the number of points is set to None.
+    output : str
+        Output FITS file name.
+    nr : int
+        Number of radius points.
+    nf : int
+        Number of volume fractions for distribution of hollow spheres (DHS).
+    density : float
+        Particle density (g cm-3).
+    amin : float
+        Minimum particle size (um).
+    amax : float
+        Maximum particle size (um).
+    apow : float
+        Size distribution power law index.
+    fmax : float
+        Irregularity parameter, maximum volume void fraction for DHS. Setting fmax to 0 equals
+        Mie theory.
+    r_eff : float
+        Effective radius (um), overrules amin, amax, apow.
+    v_eff : float
+        Effective variance (dimensionless), overrules amin, amax, apow.
 
-    :return: None
+    Returns
+    -------
+    NoneType
+        None
     """
 
     code_path = os.path.dirname(os.path.abspath(__file__))
@@ -472,12 +496,13 @@ def opacity_dhs(ri_file,
     # Percentage set to 100% (i.e., no mixture of multiple grain species)
     percentage = 100.
 
-    if sys.platform == "linux" or sys.platform == "linux2":
+    if sys.platform == 'linux' or sys.platform == 'linux2':
         computepart = code_path[:-6]+'/bin/computepart_linux'
-    elif sys.platform == "darwin":
+
+    elif sys.platform == 'darwin':
         computepart = code_path[:-6]+'/bin/computepart_mac'
 
-    temp_dir = "temp/"
+    temp_dir = 'temp/'
     if not os.path.exists(temp_dir):
         os.makedirs(temp_dir)
 
@@ -485,15 +510,19 @@ def opacity_dhs(ri_file,
 
     file_wl, _, _ = np.loadtxt(ri_file, unpack=True)
 
-    f = open("wavelength.dat", 'w')
+    f = open('wavelength.dat', 'w')
 
     if isinstance(wavelength, str):
-        hdu = fits.open("../"+wavelength)
+        hdu = fits.open('../'+wavelength)
         wavelength = hdu[0].data[0]
         hdu.close()
 
         for i in range(len(wavelength)):
-            f.write(str(wavelength[i])+"\n")
+            f.write(str(wavelength[i])+'\n')
+
+    elif wavelength is None:
+            for i, item in enumerate(file_wl):
+                f.write(str(file_wl[i])+'\n')
 
     elif wavelength[2] is None:
         if np.size(file_wl) == 1:
@@ -502,32 +531,32 @@ def opacity_dhs(ri_file,
         else:
             for i, item in enumerate(file_wl):
                 if item >= wavelength[0] and item <= wavelength[1]:
-                    f.write(str(file_wl[i])+"\n")
+                    f.write(str(file_wl[i])+'\n')
 
     else:
         wavelength = np.linspace(wavelength[0], wavelength[1], wavelength[2], endpoint=True)
 
         for _, item in enumerate(wavelength):
-            f.write(str(item)+"\n")
+            f.write(str(item)+'\n')
 
     f.close()
 
-    f = open("mie.in", 'w')
-    f.write(str(nr)+"\n")
-    f.write(str(nf)+"\n")
-    f.write("'"+str(ri_file)+"' \n")
-    f.write(str(percentage)+"\t"+str(density)+"\t"+str(amin)+"\t"+str(amax)+"\t"+str(apow)+"\t"+str(fmax))
+    f = open('mie.in', 'w')
+    f.write(f'{nr}\n')
+    f.write(f'{nf}\n')
+    f.write(f'\'{ri_file}\'\n')
+    f.write(str(percentage)+'\t'+str(density)+'\t'+str(amin)+'\t'+str(amax)+'\t'+str(apow)+'\t'+str(fmax))
     f.close()
 
-    os.chmod(computepart, 700)
+    os.chmod(computepart, 0o700)
 
     if r_eff > 0.:
-        os.system(computepart+" mie.in wavelength.dat "+str(r_eff)+" "+str(v_eff))
+        os.system(f'{computepart} mie.in wavelength.dat {r_eff} {v_eff}')
     else:
-        os.system(computepart+" mie.in wavelength.dat")
+        os.system(f'{computepart} mie.in wavelength.dat')
 
-    os.chdir("../")
-    os.rename(temp_dir+"particle.fits", output)
+    os.chdir('../')
+    os.rename(temp_dir+'particle.fits', output)
     shutil.rmtree(temp_dir)
 
     hdulist = fits.open(output)
@@ -580,6 +609,7 @@ def opacity_dhs(ri_file,
     hdulist.writeto(output, overwrite=True)
     hdulist.close()
 
+
 def opacity_molecules(pt_file,
                       wavel_range=(0.5, 20.0),
                       mmw=2.3,
@@ -587,16 +617,21 @@ def opacity_molecules(pt_file,
     """
     Function to create opacities and scattering matrices for molecules.
 
-    :param pt_file: ASCII file with the pressure-temperature profile.
-    :type pt_file: str
-    :param wavelength: Tuple with the minimum and maximum wavelength (micron)
-    :type wavelength: (float, float)
-    :param depolarization: Depolarization factor.
-    :type depolarization: float
-    :param mmw: Mean molecular weight (g/mol).
-    :type mmw: float
+    Parameters
+    ----------
+    pt_file : str
+        ASCII file with the pressure-temperature profile.
+    wavelength : tuple(float, float)
+        Tuple with the minimum and maximum wavelength (micron)
+    depolarization : float
+        Depolarization factor.
+    mmw : float
+        Mean molecular weight (g/mol).
 
-    :return: None
+    Returns
+    -------
+    NoneType
+        None
     """
 
     dat_path = os.path.dirname(os.path.abspath(__file__))[:-6]+'/dat/molecules/'
@@ -608,11 +643,17 @@ def opacity_molecules(pt_file,
 
     def get_opacity(filenumber):
         """
-        :param filenumber: Filenumber corresponds with number in PTgrid.dat.
-        :type filenumber: int
+        Parameters
+        ----------
+        filenumber : int
+            Filenumber corresponds with number in PTgrid.dat.
 
-        :return: Wavelength and opacity array.
-        :rtype: ndarray, ndarray
+        Returns
+        -------
+        np.ndarray
+            Wavelengths.
+        np.ndarray
+            Opacities.
         """
 
         wl, op = np.loadtxt(dat_path+'opacity_aver_'+str(int(filenumber)).zfill(4)+'.dat', unpack=True)
@@ -622,14 +663,18 @@ def opacity_molecules(pt_file,
     def get_pt(log_pressure_layer,
                temp_layer):
         """
-        :param log_pressure_layer: Logarithm of the pressure (bar).
-        :type log_pressure_layer: float
-        :param temp_layer: Temperature (K).
-        :type temp_layer: float
+        Parameters
+        ----------
+        log_pressure_layer : float
+            Logarithm of the pressure (bar).
+        temp_layer : float
+            Temperature (K).
 
-        :return: Indices array with the pressure and temperature boundaries in PTgrid.dat.
-                 Note that indices start at zero and filenames at 1.
-        :rtype: ndarray
+        Returns
+        -------
+        np.ndarray
+            Indices array with the pressure and temperature boundaries in PTgrid.dat. Note that
+            indices start at zero and filenames at 1.
         """
 
         opacity_pt_list = np.genfromtxt(dat_path+'PTgrid.dat', skip_header=1)
@@ -714,17 +759,21 @@ def opacity_molecules(pt_file,
                             indices,
                             opacity_array):
         """
-        :param pressure_layer: Pressure (bar).
-        :type pressure_layer: float
-        :param temp_layer: Temperature (K).
-        :type temp_layer: float
-        :param indices: Indices array of P/T boundaries in PTgrid.dat.
-        :type indices: ndarray
-        :param opacity_array: Array of opacities for each PT point in the 4 indexed points.
-        :type opacity_array: ndarray
+        Parameters
+        ----------
+        pressure_layer : float
+            Pressure (bar).
+        temp_layer : float
+            Temperature (K).
+        indices : np.ndarray
+            Indices array of P/T boundaries in PTgrid.dat.
+        opacity_array : np.ndarray
+            Array of opacities for each PT point in the 4 indexed points.
 
-        :return: Opacities.
-        :rtype: ndarray
+        Returns
+        -------
+        np.ndarray
+            Opacities.
         """
 
         opacity_pt_list = np.genfromtxt(dat_path+'PTgrid.dat', skip_header=1)
@@ -785,9 +834,9 @@ def opacity_molecules(pt_file,
         opacityNew = interpolate_opacity(pressure[i], temperature[i], indices, opacity)
 
         # Individual molecule opacity and total absorption for each layer
-        absFile = "opacity/absorption_"+str('%02d' % (len(pressure_log)-i))+".dat"
+        absFile = 'opacity/absorption_'+str('%02d' % (len(pressure_log)-i))+'.dat'
         f = open(absFile, 'w')
-        f.write("# Wavelength [micron] - Opacity x vmr [cm2/molecule]\n\n")
+        f.write('# Wavelength [micron] - Opacity x vmr [cm2/molecule]\n\n')
         for i in range(len(wavelength)):
             f.write(str(wavelength[i])+'\t'+str(opacityNew[i])+'\n')
         f.close()
@@ -903,22 +952,3 @@ def opacity_molecules(pt_file,
     for file in os.listdir(opacityDir):
         if file.startswith('absorption_') and file.endswith('.dat'):
             os.remove(opacityDir+file)
-
-if __name__ == '__main__':
-    if sys.argv[1] == 'rayleigh':
-        opacity_rayleigh(sys.argv[2])
-
-    if sys.argv[1] == 'isotropic':
-        opacity_isotropic(sys.argv[2])
-
-    if sys.argv[1] == 'henyey-greenstrein':
-        opacity_henyey_greenstein(sys.argv[2])
-
-    if sys.argv[1] == 'gas':
-        opacity_gas(sys.argv[2])
-
-    if sys.argv[1] == 'dhs':
-        opacity_dhs(sys.argv[2])
-
-    elif sys.argv[1] == 'molecules':
-        opacity_molecules(sys.argv[2])

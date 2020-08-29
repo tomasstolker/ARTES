@@ -2,6 +2,6 @@ bin/*
 lib/*
 dat/molecules/*
 docs/_build
-ARTES.o
+artes.o
 models/*
 *.py[cod]

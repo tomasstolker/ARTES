@@ -3,7 +3,9 @@
 artes.in
 ========
 
-Here you find a list with all possible keywords for the input file that is required by ARTES. This file can have any name but is called artes.in throughout the documentation.: ::
+Here you find a list with all possible keywords for the input file that is required by ARTES. This file can have any name but is called `artes.in` throughout the documentation.
+
+.. code-block:: ini
 
     ----------------------------------------------------------------------
     * General

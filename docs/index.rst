@@ -8,6 +8,7 @@ Documentation for ARTES
 
    installation
    input
+   opacity
    run
    examples
    artes.in
