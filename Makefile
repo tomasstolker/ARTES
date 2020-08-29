@@ -26,6 +26,8 @@ help:
 	@echo "install - install ARTES"
 	@echo "clean - remove artifacts"
 	@echo "docs - generate documentation"
+	@echo "pypi - submit package to the PyPI server"
+	@echo "pypi-test - submit package to the TestPyPI server"
 
 start:
 	@echo \####################################################
@@ -97,8 +99,20 @@ clean:
 	rm -f artes.o
 	rm -rf docs/_build
 	find . -name '*.pyc' -exec rm -f {} +
+	find . -name '__pycache__' -exec rm -rf {} +
+	rm -rf build/
+	rm -rf dist/
+	rm -rf artes.egg-info/
 
 docs:
 	sphinx-apidoc -o docs/ src
 	$(MAKE) -C docs clean
 	$(MAKE) -C docs html
+
+pypi:
+	python setup.py sdist bdist_wheel
+	twine upload dist/*
+
+pypi-test:
+	python setup.py sdist bdist_wheel
+	twine upload --repository-url https://test.pypi.org/legacy/ dist/*

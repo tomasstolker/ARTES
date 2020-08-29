@@ -8,7 +8,7 @@ Here you can find several examples of simulations with ARTES. Links are provided
 Limb polarization image from a Rayleigh scattering atmosphere
 -------------------------------------------------------------
 
-The first example simulates an Stokes I, Q, and U image in backward direction from a Rayleigh scattering atmosphere. The image below is created with the plot_image.py routine in the tools folder. The image shows the Stokes I flux and the vectors denote the direction and degree of polarization. The input files can be downloaded `here <https://people.phys.ethz.ch/~stolkert/artes/limb_polarization.tar.gz>`__.
+The first example simulates an Stokes I, Q, and U image in backward direction from a Rayleigh scattering atmosphere. The image below is created with the `plot_image.py` routine in the tools folder. The image shows the Stokes I flux and the vectors denote the direction and degree of polarization. The input files can be downloaded `here <https://people.phys.ethz.ch/~stolkert/artes/limb_polarization.tar.gz>`__.
 
 .. image:: _images/limb_polarization.jpg
    :width: 70%

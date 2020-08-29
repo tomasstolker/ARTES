@@ -3,7 +3,9 @@
 Input files
 ===========
 
-The working folder should contain the following files: ::
+The working folder should contain the following files:
+
+.. code-block:: ini
 
   artes.in (different name possible)
   atmosphere.in (optional, different name possible)
@@ -19,7 +21,9 @@ This file contains the input parameters for ARTES. A full description of all pos
 atmosphere.in
 -------------
 
-The atmosphere.in input is used by tools/atmosphere.py to create the required atmosphere.fits file which contains the atmospheric structure, opacities, scattering matrices, etc. A complete overview of all possible parameters is provided in the :ref:`atmosphere.in` section. Here we show a simple example: ::
+The atmosphere.in input is used by tools/atmosphere.py to create the required atmosphere.fits file which contains the atmospheric structure, opacities, scattering matrices, etc. A complete overview of all possible parameters is provided in the :ref:`atmosphere.in` section. Here we show a simple example:
+
+.. code-block:: ini
 
     [grid]
     radius: 1 ; [Rjup]
@@ -45,12 +49,16 @@ FITS gives the corresponding FITS file number, density the grid cell density, rI
 
 Gas opacities are read automatically by setting 'gas: on'. A logg [cm/s2] and mean molecular weight [g/mol] have to be specified in case a pressure temperature profile is given to set up the radial density structure.
 
-A self-luminous circumplanetary disk can be added as: ::
+A self-luminous circumplanetary disk can be added as:
+
+.. code-block:: ini
 
     ; FITS number, density [g cm-3], temperature, rIn [km], rOut [km], thetaIn, thetaOut, dust2gas, gasAbs [cm2 g-1]
     ring: 1, 1e-5, 100., 2e4, 1e5, 3, 4, 1e-2, 1e-2
 
-Make sure to use the following keyword in artes.in: ::
+Make sure to use the following keyword in artes.in:
+
+.. code-block:: ini
 
   planet:ring=on
 
@@ -92,11 +100,13 @@ The tools/opacity.py module contains several functions to create the required FI
 
    4. opacity_molecules: Pressure temperature dependent gas opacities with equilibrium chemistry mixing ratios.
 
-   5. opacity_dhs: DHS or Mie opacities and scattering matrices. This wrapper calls ComputePart, a tool developed by `Michiel Min <http://www.michielmin.nl/>`__.
+   5. opacity_dhs: DHS or Mie opacities and scattering matrices. This wrapper calls ComputePart, a tool developed by `Michiel Min <http://www.exoclouds.com/>`_.
 
-      In case a segmentation fault appears when running this routine, then try: ::
-      
-        ulimit -s unlimited
+      In case a segmentation fault appears when running this routine, then try:
+
+      .. code-block:: console
+
+        $ ulimit -s unlimited
 
    6. opacity_isotropic: Isotropic scattering phase function.
 

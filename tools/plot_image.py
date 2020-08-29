@@ -14,7 +14,7 @@ from astropy.io import fits
 
 output = sys.argv[1]
 scaling = float(sys.argv[2])
-labelPol = float(sys.argv[3])  # [%]
+label_pol = float(sys.argv[3])  # (%)
 
 # ------------------------------------------------------------
 
@@ -53,7 +53,7 @@ direction = 0.5*np.arctan2(stokes_u, stokes_q)
 fig = plt.imshow(stokes_i, origin='lower', cmap='gist_heat', interpolation='nearest', vmin=0., vmax=np.amax(stokes_i), extent=[-npix/2.,npix/2.,-npix/2.,npix/2.])
 
 cb = plt.colorbar(fig)
-cb.ax.set_ylabel('Surface brightness [W m$^{-2}$ micron$^{-1}$ mas$^{-2}$]')
+cb.ax.set_ylabel('Surface brightness (W m$^{-2}$ micron$^{-1}$ mas$^{-2}$)')
 
 plt.xlabel('x offset', fontsize=12)
 plt.ylabel('y offset', fontsize=12)
@@ -75,7 +75,7 @@ cmap, norm = mcolors.from_levels_and_colors(levels, colors)
 fig = plt.imshow(stokes_q, origin='lower', cmap=cmap, norm=norm, interpolation='nearest', vmin=Qmin, vmax=Qmax, extent=[-npix/2.,npix/2.,-npix/2.,npix/2.])
 
 cb = plt.colorbar(fig)
-cb.ax.set_ylabel('Surface brightness [W m$^{-2}$ micron$^{-1}$ mas$^{-2}$]')
+cb.ax.set_ylabel('Surface brightness (W m$^{-2}$ micron$^{-1}$ mas$^{-2}$)')
 
 plt.xlabel('x offset', fontsize=12)
 plt.ylabel('y offset', fontsize=12)
@@ -97,7 +97,7 @@ cmap, norm = mcolors.from_levels_and_colors(levels, colors)
 fig = plt.imshow(stokes_u, origin='lower', cmap=cmap, norm=norm, interpolation='nearest', vmin=Umin, vmax=Umax, extent=[-npix/2.,npix/2.,-npix/2.,npix/2.])
 
 cb = plt.colorbar(fig)
-cb.ax.set_ylabel('Surface brightness [W m$^{-2}$ micron$^{-1}$ mas$^{-2}$]')
+cb.ax.set_ylabel('Surface brightness (W m$^{-2}$ micron$^{-1}$ mas$^{-2}$)')
 
 plt.xlabel('x offset', fontsize=12)
 plt.ylabel('y offset', fontsize=12)
@@ -115,7 +115,7 @@ if abs(np.amax(stokes_v)) > 0.:
     fig = plt.imshow(stokes_v, origin='lower', cmap='gist_heat', interpolation='nearest', vmin=Vmin, vmax=Vmax, extent=[-npix/2.,npix/2.,-npix/2.,npix/2.])
 
     cb = plt.colorbar(fig)
-    cb.ax.set_ylabel('Surface brightness [W m$^{-2}$ micron$^{-1}$ mas$^{-2}$]')
+    cb.ax.set_ylabel('Surface brightness (W m$^{-2}$ micron$^{-1}$ mas$^{-2}$)')
 
     plt.xlabel('x offset', fontsize=12)
     plt.ylabel('y offset', fontsize=12)
@@ -174,7 +174,7 @@ plt.clf()
 fig = plt.imshow(stokes_i, origin='lower', cmap='gist_heat', interpolation='nearest', vmin=0., vmax=np.amax(stokes_i), extent=[-npix/2.,npix/2.,-npix/2.,npix/2.])
 
 cb = plt.colorbar(fig)
-cb.ax.set_ylabel('Surface brightness [W m$^{-2}$ micron$^{-1}$ mas$^{-2}$]')
+cb.ax.set_ylabel('Surface brightness (W m$^{-2}$ micron$^{-1}$ mas$^{-2}$)')
 
 plt.xlabel('x offset', fontsize=12)
 plt.ylabel('y offset', fontsize=12)
@@ -190,8 +190,8 @@ for i in range(npix):
                        angles='xy', scale=scaling/polarization[j,i], color='#66CCFF',
                        edgecolor='#66CCFF', pivot='middle', headwidth=0, headlength=0, headaxislength=0, width=0.002)
 
-label = str('{:.0f}'.format(labelPol))+'%'
-plt.quiver(npix/15.-npix/2., npix/20.-npix/2., 1., 0., scale=scaling/(labelPol/100.), width=0.007, pivot='middle', headwidth=0, headlength=0, headaxislength=0, color='#66CCFF', edgecolor='#66CCFF')
+label = str('{:.0f}'.format(label_pol))+'%'
+plt.quiver(npix/15.-npix/2., npix/20.-npix/2., 1., 0., scale=scaling/(label_pol/100.), width=0.007, pivot='middle', headwidth=0, headlength=0, headaxislength=0, color='#66CCFF', edgecolor='#66CCFF')
 plt.annotate(label, xy=(npix/15.-npix/2., npix/20.-npix/2.), xycoords='data', color='white', xytext=(0,7), textcoords='offset points', ha='center')
 
 deg = np.sqrt(np.sum(stokes_q)**2+np.sum(stokes_u)**2)/np.sum(stokes_i)
