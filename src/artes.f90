@@ -424,6 +424,11 @@ contains
     
     ! Oblateness
 
+    if (oblateness.gt.0._dp.and.photon_source.eq.1) then
+        write (6,'(a)') "ERROR: The oblateness parameter is only supported by photon:source=planet."
+        call exit(0)
+    end if
+
     oblate_x = 1._dp / (1._dp-oblateness)
     oblate_y = oblate_x
     oblate_z = 1._dp

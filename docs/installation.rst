@@ -3,8 +3,8 @@
 Installation
 ============
 
-Compiler
---------
+GNU Fortran compiler
+--------------------
 
 Before installing ARTES, the GNU Fortran compiler needs to be installed, for example with |Homebrew| (Mac):
 
@@ -18,8 +18,8 @@ Or with |APT| (Linux):
 
     $ sudo apt-get install gfortran
 
-ARTES
------
+Compiling the source code
+-------------------------
 
 ARTES is now compiled with help of the `Makefile` which is located in the main folder:
 
@@ -38,8 +38,8 @@ Note that during installation several files with opacities and libraries (14 MB)
 .. tip::
    To see the different options of the `Makefile`, simply run ``make`` in the folder of the `Makefile`.
 
-Library path
-------------
+Setting the library path
+------------------------
 
 Finally, the library path needs to be exported as environment variable. For example, on a Mac:
 
@@ -53,7 +53,10 @@ Or on Linux:
 
     $ export LD_LIBRARY_PATH="$LD_LIBRARY_PATH:/path/to/ARTES/lib"
 
-It is also recommended to add the `tools` folder to the ``PYTHONPATH`` such that the ``opacity`` functions are easily accessible with Python:
+Setting the Python path
+-----------------------
+
+It is also recommended to add the `tools` folder to the ``PYTHONPATH`` such that the `tools/opacity.py` functions are easily accessible with Python:
 
 .. code-block:: console
 

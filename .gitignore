@@ -3,5 +3,5 @@ lib/*
 dat/molecules/*
 docs/_build
 artes.o
-models/*
 *.py[cod]
+setup.py
