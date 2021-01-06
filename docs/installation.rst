@@ -6,13 +6,13 @@ Installation
 GNU Fortran compiler
 --------------------
 
-Before installing ARTES, the GNU Fortran compiler needs to be installed, for example with |Homebrew| (Mac):
+Before installing ARTES, the GNU Fortran compiler needs to be installed, for example with `Homebrew <https://brew.sh/>`_ (Mac):
 
 .. code-block:: console
 
     $ brew install gcc
 
-Or with |APT| (Linux):
+Or with `APT <https://en.wikipedia.org/wiki/APT_(software)>`_ (Linux):
 
 .. code-block:: console
 
@@ -61,11 +61,3 @@ It is also recommended to add the `tools` folder to the ``PYTHONPATH`` such that
 .. code-block:: console
 
     $ export PYTHONPATH="$PYTHONPATH:/path/to/ARTES/tools"
-
-.. |Homebrew| raw:: html
-
-   <a href="https://brew.sh/" target="_blank">Homebrew</a>
-
-.. |APT| raw:: html
-
-   <a href="https://en.wikipedia.org/wiki/APT_(software)" target="_blank">APT</a>

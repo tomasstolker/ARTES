@@ -16,12 +16,12 @@ The working folder should contain the following files:
 artes.in
 --------
 
-This file contains the input parameters for ARTES. A full description of all possible keywords is provided in the :ref:`artes.in` section. Command line keywords can be included with the '-k' flag which will overrule the input file keyword.
+This file contains the input parameters for ARTES. A full description of all possible keywords is provided in the :ref:`artes.in` section. Command line keywords can be included with the ``-k`` flag, which will overrule the input file keyword.
 
 atmosphere.in
 -------------
 
-The atmosphere.in input is used by tools/atmosphere.py to create the required atmosphere.fits file which contains the atmospheric structure, opacities, scattering matrices, etc. A complete overview of all possible parameters is provided in the :ref:`atmosphere.in` section. Here we show a simple example:
+The input from the `atmosphere.in` file is used by `tools/atmosphere.py` to create the required `atmosphere.fits` file, which contains the atmospheric structure, opacities, scattering matrices, etc. A complete overview of all possible parameters is provided in the :ref:`atmosphere.in` section. Here we show a simple example:
 
 .. code-block:: ini
 
@@ -83,7 +83,10 @@ To run ARTES, the atmosphere.fits and artes.in files are required. The atmospher
 pressure_temperature.dat
 ------------------------
 
-A pressure-temperature profile can be provided in the folder where also the opacity folder is located. The profile is used by ARTES to compute the gas densities, mixing ratios, and absorption cross sections. The profile should be given in units of [bar] and [K] with increasing pressure.
+A pressure-temperature profile can be provided in the folder where also the opacity folder is located. The profile is used by ARTES to compute the gas densities, mixing ratios, and absorption cross sections. The profile should be given in units of bar and K with increasing pressure.
+
+.. important::
+   When using a P/T profile, the radii (in km) corresponding to the pressure layers are calculated with `tools/atmosphere.py`. Therefore, no values should be provided to the ``radial`` keyword in the `atmosphere.in` configuration file.
 
 Scattering properties
 ---------------------
@@ -100,7 +103,7 @@ The tools/opacity.py module contains several functions to create the required FI
 
    4. opacity_molecules: Pressure temperature dependent gas opacities with equilibrium chemistry mixing ratios.
 
-   5. opacity_dhs: DHS or Mie opacities and scattering matrices. This wrapper calls ComputePart, a tool developed by `Michiel Min <http://www.exoclouds.com/>`_.
+   5. opacity_dhs: DHS or Mie opacities and scattering matrices. This wrapper calls `ComputePart`, a tool developed by `Michiel Min <http://www.exoclouds.com/>`_.
 
       In case a segmentation fault appears when running this routine, then try:
 

@@ -1,4 +1,4 @@
-.PHONY: help start data compile end download install all clean docs
+.PHONY: help all download install clean docs pypi pypi-test
 
 debug = false
 linux = false
@@ -52,11 +52,11 @@ data:
 	@echo
 	@echo Downloading data...
 	@echo
-	wget -q --show-progress -O lib/libcfitsio.5.dylib https://people.phys.ethz.ch/~stolkert/artes/libcfitsio.5.dylib
-	wget -q --show-progress -O lib/libcfitsio.so.3 https://people.phys.ethz.ch/~stolkert/artes/libcfitsio.so.3
-	wget -q --show-progress -O dat/molecules/molecules.tar.gz https://people.phys.ethz.ch/~stolkert/artes/molecules.tar.gz
-	wget -q --show-progress -O bin/computepart_mac https://people.phys.ethz.ch/~stolkert/artes/computepart_mac
-	wget -q --show-progress -O bin/computepart_linux https://people.phys.ethz.ch/~stolkert/artes/computepart_linux
+	wget -q --show-progress -O lib/libcfitsio.5.dylib https://home.strw.leidenuniv.nl/~stolker/artes/libcfitsio.5.dylib
+	wget -q --show-progress -O lib/libcfitsio.so.3 https://home.strw.leidenuniv.nl/~stolker/artes/libcfitsio.so.3
+	wget -q --show-progress -O dat/molecules/molecules.tar.gz https://home.strw.leidenuniv.nl/~stolker/artes/molecules.tar.gz
+	wget -q --show-progress -O bin/computepart_mac https://home.strw.leidenuniv.nl/~stolker/artes/computepart_mac
+	wget -q --show-progress -O bin/computepart_linux https://home.strw.leidenuniv.nl/~stolker/artes/computepart_linux
 	@echo
 	@echo ----------------------------------------------------
 	@echo
@@ -89,11 +89,11 @@ end:
 	@echo
 	@echo \####################################################
 
+all: start data compile end
+
 download: start data end
 
 install: start compile end
-
-all: start data compile end
 
 clean:
 	rm -f artes.o
