@@ -12,7 +12,7 @@ ARTES
 .. image:: http://img.shields.io/badge/arXiv-1706.09427-orange.svg?style=flat
     :target: http://arxiv.org/abs/1706.09427
 
-ARTES is a 3D Monte Carlo radiative transfer code specifically designed for polarized scattered light simulations of exoplanet atmospheres. Computations of both reflected stellar light and thermal emission from the planet are possible for an arbitrary atmospheric structure and distribution of opacity sources. Multiple scattering, absorption, and polarization are fully treated and the output includes an image, spectrum, or phase curve. Several tools are included to create opacities and scattering matrices for molecules and clouds.
+ARTES is a 3D Monte Carlo radiative transfer code for polarized scattered light simulations of exoplanet atmospheres. The code can be used for post-processing of a pre-calculated or parametrized atmosphere structure. Multiple scattering, absorption, and polarization are fully treated and the output includes an image, spectrum, or phase curve of reflected stellar light or thermal photons. Several tools are included for calculating opacities and scattering matrices of molecules and clouds but the user can also adopt their own opacities.
 
 Documentation
 -------------
@@ -22,7 +22,7 @@ Documentation can be found at `http://artes.readthedocs.io <http://artes.readthe
 Attribution
 -----------
 
-Please cite `Stolker et al., 2017, A&A, 607, A42 <http://adsabs.harvard.edu/abs/2017A%26A...607A..42S>`_ whenever results from ARTES are used in a publication.
+Please cite `Stolker et al. (2017) <http://adsabs.harvard.edu/abs/2017A%26A...607A..42S>`_ whenever results from ARTES are used in a publication.
 
 License
 -------
