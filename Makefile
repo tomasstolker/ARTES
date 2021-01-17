@@ -105,7 +105,8 @@ clean:
 	rm -rf artes.egg-info/
 
 docs:
-	sphinx-apidoc -o docs/ src
+	sphinx-apidoc -o docs src
+	cd docs/
 	$(MAKE) -C docs clean
 	$(MAKE) -C docs html
 

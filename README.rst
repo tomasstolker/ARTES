@@ -3,7 +3,7 @@ ARTES
 
 **Radiative transfer of polarized light in 3D exoplanet atmospheres**
 
-.. image:: https://img.shields.io/readthedocs/ARTES
+.. image:: https://img.shields.io/readthedocs/artes
    :target: http://artes.readthedocs.io
 
 .. image:: https://img.shields.io/badge/license-MIT-blue.svg?style=flat

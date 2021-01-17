@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-#
 # Configuration file for the Sphinx documentation builder.
 #
 # This file does only contain a selection of the most common options. For a
@@ -11,23 +9,24 @@
 # If extensions (or modules to document with autodoc) are in another directory,
 # add these directories to sys.path here. If the directory is relative to the
 # documentation root, use os.path.abspath to make it absolute, like shown here.
-#
-# import os
-# import sys
-# sys.path.insert(0, os.path.abspath('.'))
+
+import os
+import sys
+
+sys.path.insert(0, os.path.abspath('../'))
 
 
 # -- Project information -----------------------------------------------------
 
-project = u'ARTES'
-copyright = u'2018-2021, Tomas Stolker'
-author = u'Tomas Stolker'
+project = 'ARTES'
+copyright = '2018-2021, Tomas Stolker'
+author = 'Tomas Stolker'
 
 # The short X.Y version
-version = u''
-# The full version, including alpha/beta/rc tags
-release = u''
-
+# with open('../ARTES/__init__.py') as initfile:
+#     for line in initfile:
+#         if '__version__' in line:
+#             version = line.split("'")[1]
 
 # -- General configuration ---------------------------------------------------
 
@@ -63,7 +62,7 @@ language = None
 # List of patterns, relative to source directory, that match files and
 # directories to ignore when looking for source files.
 # This pattern also affects html_static_path and html_extra_path .
-exclude_patterns = [u'_build', 'Thumbs.db', '.DS_Store']
+exclude_patterns = ['_build', 'Thumbs.db', '.DS_Store']
 
 # The name of the Pygments (syntax highlighting) style to use.
 pygments_style = 'sphinx'
@@ -80,12 +79,12 @@ html_theme = 'sphinx_rtd_theme'
 # further.  For a list of options available for each theme, see the
 # documentation.
 #
-html_theme_options = {"collapse_navigation": False,
-                      "display_version": False,
-                      "sticky_navigation": True,
-                      "prev_next_buttons_location": "bottom",
-                      "navigation_depth": 5,
-                      "logo_only": False}
+html_theme_options = {'collapse_navigation': False,
+                      'display_version': False,
+                      'sticky_navigation': True,
+                      'prev_next_buttons_location': 'bottom',
+                      'navigation_depth': 5,
+                      'logo_only': True}
 
 # Add any paths that contain custom static files (such as style sheets) here,
 # relative to this directory. They are copied after the builtin static files,
@@ -102,6 +101,14 @@ html_static_path = ['_images']
 #
 # html_sidebars = {}
 
+html_logo = '_images/logo.png'
+html_favicon = '_images/favicon.png'
+html_search_language = 'en'
+
+html_context = {'display_github': True,
+                'github_user': 'tomasstolker',
+                'github_repo': 'ARTES',
+                'github_version': 'master/docs/'}
 
 # -- Options for HTMLHelp output ---------------------------------------------
 
@@ -133,8 +140,8 @@ latex_elements = {
 # (source start file, target name, title,
 #  author, documentclass [howto, manual, or own class]).
 latex_documents = [
-    (master_doc, 'ARTES.tex', u'ARTES Documentation',
-     u'Tomas Stolker', 'manual'),
+    (master_doc, 'ARTES.tex', 'ARTES Documentation',
+     'Tomas Stolker', 'manual'),
 ]
 
 
@@ -143,7 +150,7 @@ latex_documents = [
 # One entry per manual page. List of tuples
 # (source start file, name, description, authors, manual section).
 man_pages = [
-    (master_doc, 'artes', u'ARTES Documentation',
+    (master_doc, 'artes', 'ARTES Documentation',
      [author], 1)
 ]
 
@@ -154,7 +161,7 @@ man_pages = [
 # (source start file, target name, title, author,
 #  dir menu entry, description, category)
 texinfo_documents = [
-    (master_doc, 'ARTES', u'ARTES Documentation',
-     author, 'ARTES', 'One line description of project.',
+    (master_doc, 'ARTES', 'ARTES Documentation',
+     author, 'ARTES', 'Radiative transfer of polarized light in 3D exoplanet atmospheres',
      'Miscellaneous'),
 ]
