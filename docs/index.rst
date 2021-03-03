@@ -3,6 +3,8 @@
 Documentation for ARTES
 =======================
 
+*ARTES* is a radiative transfer code for polarized light simulations of 3D exoplanet atmospheres.
+
 .. toctree::
    :maxdepth: 2
 

@@ -5,13 +5,17 @@ Input files
 
 The working folder should contain the following files:
 
-.. code-block:: ini
+* **artes.in** - Text file that contains the input parameters for ARTES (see :ref:`artes.in` for an example). This input file may have a different filename.
 
-  artes.in (different name possible)
-  atmosphere.in (optional, different name possible)
-  atmosphere.fits (can be created with atmosphere.in)
-  pressure_temperature.dat (optional, different name possible)
-  opacity/[FITS]
+* **atmosphere.in** - Configuration file (INI format) that contains the input parameters for *tools/atmosphere.py* (see :ref:`atmosphere.in` for an example), which can be used to create the required *atmosphere.fits*. This input file is not mandatory but only required if *atmosphere.py* is used. This input file may have a different filename.
+
+* **atmosphere.fits** - FITS file that contains the 3D atmosphere structure that is used by ARTES. The file can be manually created as long as the correct data structure is used. Alternatively, *tools/atmosphere.py* can be used  with an input file such as *atmosphere.in* which helps to build *atmosphere.fits*.
+
+* **pressure_temperature.dat** - Optional file with a 1D P-T structure. This input file may have a different filename.
+
+* **opacity/[FITS]** - The *opacity* folder should contain the opacity files that will be used by *atmosphere.in* to build *atmosphere.fits*.
+
+Further details on these input files is provided below.
 
 artes.in
 --------
@@ -21,7 +25,7 @@ This file contains the input parameters for ARTES. A full description of all pos
 atmosphere.in
 -------------
 
-The input from the `atmosphere.in` file is used by `tools/atmosphere.py` to create the required `atmosphere.fits` file, which contains the atmospheric structure, opacities, scattering matrices, etc. A complete overview of all possible parameters is provided in the :ref:`atmosphere.in` section. Here we show a simple example:
+The input from the *atmosphere.in* file is used by *tools/atmosphere.py* to create the required *atmosphere.fits* file, which contains the atmospheric structure. A complete overview of all possible parameters is provided in the :ref:`atmosphere.in` section. Here we show a simple example:
 
 .. code-block:: ini
 
@@ -35,28 +39,26 @@ The input from the `atmosphere.in` file is used by `tools/atmosphere.py` to crea
     gas: off
     fits01: gas.fits
     fits02: clouds.fits
-    ; FITS number, density [g cm-3], rIn, rOut, thetaIn, thetaOut, phiIn, phiOut
+    ; FITS number, density (g cm-3), r_in (km), r_out (km), theta_in (deg), theta_out (deg), phi_in (deg), phi_out (deg)
     opacity01: 1, 1.e-3, 0, nr, 0, ntheta, 0, nphi
     opacity02: 2, 1.e-1, 0, nr, 1, 2, 0, nphi
 
-The [grid] part contains the grid structure of the atmosphere. Radial, polar, and azimuthal grid boundaries can be added.
+The *[grid]* section contains the grid structure of the atmosphere. Radial, polar, and azimuthal grid boundaries can be added.
 
-The [composition] part contains a list of all the opacity FITS files that are used. Numbers counting from one, with a leading zero for single digit numbers. The opacity keywords specify which opacity sources belong to which grid cells:
+The *[composition]* section contains a list of all the opacity FITS files that are used. Numbers counting from one, with a leading zero for single digit numbers. The opacity keywords specify which opacity sources belong to which grid cells.
 
-    FITS, density [g cm-3], rIn, rOut, thetaIn, thetaOut, phiIn, phiOut
+Specifically, *FITS number* is the number of the opacity FITS file, *density* is the density of the grid cell, *r_in* and *r_out* are the inner and outer radial boundary, *theta_in* and *theta_out* are the inner and outer polar boundary, and *phi_in* and *phi_out* are the inner and outer azimuthal boundary. The outer most boundaries may also be specified as *nr*, *ntheta*, and *nphi*.
 
-FITS gives the corresponding FITS file number, density the grid cell density, rIn/rOut the inner and outer radial grid cell face and the same for theta and phi. The outer most boundaries are given by nr, ntheta, nphi.
-
-Gas opacities are read automatically by setting 'gas: on'. A logg [cm/s2] and mean molecular weight [g/mol] have to be specified in case a pressure temperature profile is given to set up the radial density structure.
+Gas opacities are read automatically by setting *gas: on*. The surface gravity, $\log(g)$ (with g in cm s-2), and mean molecular weight (in g/mol) should be specified in case a P-T profile is used (e.g. as *pressure_temperature.dat*) to set up the radial density structure.
 
 A self-luminous circumplanetary disk can be added as:
 
 .. code-block:: ini
 
-    ; FITS number, density [g cm-3], temperature, rIn [km], rOut [km], thetaIn, thetaOut, dust2gas, gasAbs [cm2 g-1]
+    ; FITS number, density (g cm-3), temperature, r_in (km), r_out (km), theta_in (deg), theta_out (deg), dust2gas, gas_abs (cm2 g-1)
     ring: 1, 1e-5, 100., 2e4, 1e5, 3, 4, 1e-2, 1e-2
 
-Make sure to use the following keyword in artes.in:
+Make sure to use the following keyword in *artes.in*:
 
 .. code-block:: ini
 
@@ -65,20 +67,27 @@ Make sure to use the following keyword in artes.in:
 atmosphere.fits
 ---------------
 
-This FITS file contains the atmospheric structure and scattering properties. It should have the following nine HDU extensions:
+This FITS file contains the atmospheric structure and scattering properties and should have the following file structure:
 
-  0. 1D Radial boundaries [m]
-  1. 1D Polar boundaries [deg]
-  2. 1D Azimuthal boundaries [deg]
-  3. 1D Wavelength points [micron]
-  4. 3D Density [kg m-3]
-  5. 3D Temperature [K]
-  6. 4D Scattering opacity [m-1]
-  7. 4D Absorption opacity [m-1]
+  0. 1D Radial boundaries (m)
+  1. 1D Polar boundaries (deg)
+  2. 1D Azimuthal boundaries (deg)
+  3. 1D Wavelength points (um)
+  4. 3D Density (kg m-3)
+  5. 3D Temperature (K)
+  6. 4D Scattering opacity (m-1)
+  7. 4D Absorption opacity (m-1)
   8. 6D Scattering matrix
   9. 4D Asymmetry parameter
-  
-To run ARTES, the atmosphere.fits and artes.in files are required. The atmosphere.fits file can be created with the tools/atmosphere.py script and an atmosphere.in input file.
+
+The radial boundaries are included as the primary HDU of the FITS file and the 9 following extensions are image HDUs.
+
+To run ARTES, the *atmosphere.fits* and *artes.in* files are required. The *atmosphere.fits* file can be created with the *tools/atmosphere.py* script and an *atmosphere.in* input file.
+
+Alternatively, the user could also manually create *atmosphere.fits*, for example by adopting the atmospheric structure from a different model and using ARTES for calculating the polarization observables.
+
+.. important::
+	The extension with the 3D density structure is no longer required by ARTES. The density is already included in the extensions with the scattering and absorption opacities, which are the product of the particle opacity and mass density. Therefore, the density array may simply contain zeros.
 
 pressure_temperature.dat
 ------------------------
@@ -95,15 +104,15 @@ Several type of opacities can be generated. The opacity and scattering matrices 
 
 The tools/opacity.py module contains several functions to create the required FITS files for different particle types:
 
-   1. opacity_henyey: Henyey-Greenstein scattering phase function.
+   1. **opacity_henyey** - Henyey-Greenstein scattering phase function.
 
-   2. opacity_rayleigh: Rayleigh scattering phase function.
+   2. **opacity_rayleigh** - Rayleigh scattering phase function.
 
-   3. opacity_gas: Gas opacities with Rayleigh scattering cross-section and wavelength dependent absorption coefficients.
+   3. **opacity_gas** - Gas opacities with Rayleigh scattering cross-section and wavelength dependent absorption coefficients.
 
-   4. opacity_molecules: Pressure temperature dependent gas opacities with equilibrium chemistry mixing ratios.
+   4. **opacity_molecules** - Pressure temperature dependent gas opacities with equilibrium chemistry mixing ratios.
 
-   5. opacity_dhs: DHS or Mie opacities and scattering matrices. This wrapper calls `ComputePart`, a tool developed by `Michiel Min <http://www.exoclouds.com/>`_.
+   5. **opacity_dhs** - DHS or Mie opacities and scattering matrices. This wrapper calls ``ComputePart``, a tool developed by `Michiel Min <http://www.exoclouds.com/>`_.
 
       In case a segmentation fault appears when running this routine, then try:
 
@@ -111,6 +120,6 @@ The tools/opacity.py module contains several functions to create the required FI
 
         $ ulimit -s unlimited
 
-   6. opacity_isotropic: Isotropic scattering phase function.
+   6. **opacity_isotropic** - Isotropic scattering phase function.
 
-All opacity FITS files should be located in the opacity folder.
+All opacity FITS files should be located in the *opacity* folder.
