@@ -22,7 +22,7 @@ def opacity_rayleigh(wavelength,
     ----------
     wavelength : str, tuple(float, float, int)
         FITS filename that contains the wavelength points or a tuple with the minimum wavelength
-        (micron), maximum wavelength (um), and number of equally spaced wavelength points.
+        (um), maximum wavelength (um), and number of equally spaced wavelength points.
     output : str
         Output FITS file name.
     albedo : float
@@ -59,7 +59,7 @@ def opacity_rayleigh(wavelength,
     for _, item in enumerate(wavelength):
         a = 13.58e-5
         b = 7.52e-3
-        ri = 1.+a+a*b/(item**2) # Wavelength in [micron]
+        ri = 1.+a+a*b/(item**2) # Wavelength [um]
 
         rindex = (ri*ri-1.)*(ri*ri-1.)/((ri*ri+2.)*(ri*ri+2.))
         dep = (6.+3.*depolarization)/(6.-7.*depolarization)
@@ -124,7 +124,7 @@ def opacity_rayleigh(wavelength,
     hdulist.append(fits.ImageHDU(opacity, name='opacity'))
     hdulist.append(fits.ImageHDU(scatter, name='scatter'))
     hdu = hdulist[0]
-    hdu.header['COMMENT'] = '1. Wavelength [micron]'
+    hdu.header['COMMENT'] = '1. Wavelength [um]'
     hdu.header['COMMENT'] = '2. Extinction [cm2 g-1]'
     hdu.header['COMMENT'] = '3. Absorption [cm2 g-1]'
     hdu.header['COMMENT'] = '4. Scattering [cm2 g-1]'
@@ -143,7 +143,7 @@ def opacity_isotropic(wavelength,
     ----------
     wavelength : str, tuple(float, float, int)
         FITS filename that contains the wavelength points or a tuple with the minimum wavelength
-        (um), maximum wavelength (micron), and number of equally spaced wavelength points.
+        (um), maximum wavelength (um), and number of equally spaced wavelength points.
     output : str
         Output FITS file name.
     absorption : float
@@ -182,7 +182,7 @@ def opacity_isotropic(wavelength,
     hdulist.append(fits.ImageHDU(opacity, name='opacity'))
     hdulist.append(fits.ImageHDU(scatter, name='scatter'))
     hdu = hdulist[0]
-    hdu.header['COMMENT'] = '1. Wavelength [micron]'
+    hdu.header['COMMENT'] = '1. Wavelength [um]'
     hdu.header['COMMENT'] = '2. Extinction [cm2 g-1]'
     hdu.header['COMMENT'] = '3. Absorption [cm2 g-1]'
     hdu.header['COMMENT'] = '4. Scattering [cm2 g-1]'
@@ -204,7 +204,7 @@ def opacity_henyey_greenstein(wavelength,
     ----------
     wavelength : str, tuple(float, float, int)
         FITS filename that contains the wavelength points or a tuple with the minimum wavelength
-        (um), maximum wavelength (micron), and number of equally spaced wavelength points.
+        (um), maximum wavelength (um), and number of equally spaced wavelength points.
     output : str
         Output FITS file name.
     absorption : float
@@ -288,7 +288,7 @@ def opacity_henyey_greenstein(wavelength,
     hdulist.append(fits.ImageHDU(opacity, name='opacity'))
     hdulist.append(fits.ImageHDU(scatter, name='scatter'))
     hdu = hdulist[0]
-    hdu.header['COMMENT'] = '1. Wavelength [micron]'
+    hdu.header['COMMENT'] = '1. Wavelength [um]'
     hdu.header['COMMENT'] = '2. Extinction [cm2 g-1]'
     hdu.header['COMMENT'] = '3. Absorption [cm2 g-1]'
     hdu.header['COMMENT'] = '4. Scattering [cm2 g-1]'
@@ -311,7 +311,7 @@ def opacity_gas(abs_file,
     abs_file : str
         ASCII file that contains the wavelength dependent absorption coefficients.
     wavelength : tuple(float, float, int)
-        Tuple with the minimum wavelength (micron), maximum wavelength (micron), and number of
+        Tuple with the minimum wavelength (um), maximum wavelength (um), and number of
         equally spaced wavelength points. The wavelengths from the absorption coefficients file
         are used if the number of points is set to None.
     output : str
@@ -340,7 +340,7 @@ def opacity_gas(abs_file,
     gas_mass_abs = mmw_abs / avogadro # Molecule mass [g]
     gas_mass_scat = mmw_scat / avogadro # Molecule mass [g]
 
-    # Wavelength [micron] - Absorption [cm2 mol-1]
+    # Wavelength [um] - Absorption [cm2 mol-1]
     file_wl, file_abs = np.loadtxt(abs_file, unpack=True)
 
     file_abs = file_abs/gas_mass_abs # [cm2 molecule-1] -> [cm2 g-1]
@@ -371,7 +371,7 @@ def opacity_gas(abs_file,
     for i in range(len(wavelength_new)):
         # H2 refractive index
         a = 13.58e-5
-        b = 7.52e-3 # [micron^2]
+        b = 7.52e-3 # [um^2]
         ri = 1.+a+a*b/(wavelength_new[i]*wavelength_new[i])
 
         # Rayleigh cross section [cm2]
@@ -432,7 +432,7 @@ def opacity_gas(abs_file,
     hdulist.append(fits.ImageHDU(opacity, name='opacity'))
     hdulist.append(fits.ImageHDU(scatter, name='scatter'))
     hdu = hdulist[0]
-    hdu.header['COMMENT'] = '1. Wavelength [micron]'
+    hdu.header['COMMENT'] = '1. Wavelength [um]'
     hdu.header['COMMENT'] = '2. Extinction [cm2 g-1]'
     hdu.header['COMMENT'] = '3. Absorption [cm2 g-1]'
     hdu.header['COMMENT'] = '4. Scattering [cm2 g-1]'
@@ -461,7 +461,7 @@ def opacity_dhs(ri_file,
         ASCII file that contains the wavelength dependent complex refractive index.
     wavelength: str, tuple(float, float, int)
         FITS filename that contains the wavelength points or a tuple with the minimum wavelength
-        (um), maximum wavelength (micron), and number of equally spaced wavelength points. The
+        (um), maximum wavelength (um), and number of equally spaced wavelength points. The
         wavelengths from the refractive index file are used if the number of points is set to None.
     output : str
         Output FITS file name.
@@ -602,7 +602,7 @@ def opacity_dhs(ri_file,
     hdulist.append(fits.ImageHDU(opacity, name='opacity'))
     hdulist.append(fits.ImageHDU(scatter, name='scatter'))
     hdu = hdulist[0]
-    hdu.header['COMMENT'] = '1. Wavelength [micron]'
+    hdu.header['COMMENT'] = '1. Wavelength [um]'
     hdu.header['COMMENT'] = '2. Extinction [cm2 g-1]'
     hdu.header['COMMENT'] = '3. Absorption [cm2 g-1]'
     hdu.header['COMMENT'] = '4. Scattering [cm2 g-1]'
@@ -622,7 +622,7 @@ def opacity_molecules(pt_file,
     pt_file : str
         ASCII file with the pressure-temperature profile.
     wavelength : tuple(float, float)
-        Tuple with the minimum and maximum wavelength (micron)
+        Tuple with the minimum and maximum wavelength (um)
     depolarization : float
         Depolarization factor.
     mmw : float
@@ -836,7 +836,7 @@ def opacity_molecules(pt_file,
         # Individual molecule opacity and total absorption for each layer
         absFile = 'opacity/absorption_'+str('%02d' % (len(pressure_log)-i))+'.dat'
         f = open(absFile, 'w')
-        f.write('# Wavelength [micron] - Opacity x vmr [cm2/molecule]\n\n')
+        f.write('# Wavelength [um] - Opacity x vmr [cm2/molecule]\n\n')
         for i in range(len(wavelength)):
             f.write(str(wavelength[i])+'\t'+str(opacityNew[i])+'\n')
         f.close()
@@ -918,7 +918,7 @@ def opacity_molecules(pt_file,
             scatter = np.zeros((180, 16, len(list_wl)))
 
             for i in range(len(list_wl)):
-                opacity[0, i] = list_wl[i] # [micron]
+                opacity[0, i] = list_wl[i] # [um]
                 opacity[1, i] = list_ext[i] # [cm2 g-1]
                 opacity[2, i] = list_abs[i] # [cm2 g-1]
                 opacity[3, i] = list_scat[i] # [cm2 g-1]
@@ -942,7 +942,7 @@ def opacity_molecules(pt_file,
             hdulist.append(fits.ImageHDU(opacity, name='opacity'))
             hdulist.append(fits.ImageHDU(scatter, name='scatter'))
             hdu = hdulist[0]
-            hdu.header['COMMENT'] = '1. Wavelength [micron]'
+            hdu.header['COMMENT'] = '1. Wavelength [um]'
             hdu.header['COMMENT'] = '2. Extinction [cm2 g-1]'
             hdu.header['COMMENT'] = '3. Absorption [cm2 g-1]'
             hdu.header['COMMENT'] = '4. Scattering [cm2 g-1]'

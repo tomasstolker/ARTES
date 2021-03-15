@@ -69,7 +69,7 @@ for file in os.listdir(opacity):
                 plt.plot(wavelength, scattering, color='gray', ls='--', lw=0.6)
                 plt.plot(wavelength, absorption, color='gray', ls='-', lw=0.6)
 
-plt.xlabel('Wavelength [micron]')
+plt.xlabel('Wavelength [um]')
 plt.ylabel('Opacity [cm$^2$/g]')
 
 plt.xscale('log')

@@ -16,7 +16,7 @@ wavelength, extinction, absorption, scattering = np.loadtxt(directory[:-6]+'outp
 plt.plot(wavelength, absorption, '-', label='Absorption')
 plt.plot(wavelength, scattering, '-', label='Scattering')
 
-plt.xlabel('Wavelength [micron]')
+plt.xlabel('Wavelength [um]')
 plt.ylabel('Optical depth')
 
 plt.xscale('log')

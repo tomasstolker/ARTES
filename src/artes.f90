@@ -84,7 +84,7 @@ program artes
   real(dp), allocatable     :: theta_grid_tan(:)                      ! Tangent of theta boundaries
   real(dp), allocatable     :: phi_grid_sin(:)                        ! Sine of phi boundaries
   real(dp), allocatable     :: phi_grid_cos(:)                        ! Cosine of phi boundaries
-  real(dp), allocatable     :: wavelengths(:)                         ! Wavelength points [micron]
+  real(dp), allocatable     :: wavelengths(:)                         ! Wavelength points [um]
   real(dp), allocatable     :: cell_flow_global(:,:,:,:,:)            ! Global energy transport through each cell
   real(dp), allocatable     :: cell_flow(:,:,:,:,:)                   ! Energy transport through cell boundary (1=upward, 2=downward, 3=south, 4=north)
   real(dp), allocatable     :: emissivity_cumulative(:,:,:)           ! Cumulative emissivity in each grid cell CDF
@@ -147,7 +147,7 @@ contains
           if (wl_count.eq.1) call output(2)
 
           write (6,fmt="(a1,a,t13,f7.3,a)", advance="no") achar(13), &
-               "Wavelength: ", wavelength*1.e6_dp, " micron"
+               "Wavelength: ", wavelength*1.e6_dp, " um"
 
           call radiative_transfer
           call write_output
@@ -421,7 +421,7 @@ contains
        det_theta = pi/2._dp
        det_phi = 1.e-5_dp
     end if
-    
+
     ! Oblateness
 
     if (oblateness.gt.0._dp.and.photon_source.eq.1) then
@@ -1949,14 +1949,14 @@ contains
     deallocate (temp)
     phifront = phifront*pi/180.
 
-    ! Wavelengths [micron]
+    ! Wavelengths [um]
 
     call ftmrhd(unit,1,hdutype,status)
     call ftgknj(unit,'NAXIS',1,1,n_wavelength,nfound,status)
     allocate (wavelengths(n_wavelength))
     wavelengths = 0._dp
     call ftgpvd(unit,1,1,n_wavelength,-999._dp,wavelengths,anynul,status)
-    wavelengths = wavelengths * 1.e-6_dp ! [micron] to [m]
+    wavelengths = wavelengths * 1.e-6_dp ! [um] to [m]
 
     ! Density [kg m-3]
 
@@ -2320,7 +2320,7 @@ contains
 
              open (100, file=trim(output_name)//'/output/optical_depth.dat', status='new', action='write')
 
-             write (100,*) "# Wavelength [micron] - Total optical depth - Absorption optical depth - Scattering optical depth"
+             write (100,*) "# Wavelength [um] - Total optical depth - Absorption optical depth - Scattering optical depth"
              write (100,*)
 
           end if
@@ -2335,7 +2335,7 @@ contains
              optical_depth_total2 = optical_depth_total2 + ( (rfront(i+1)-rfront(i)) * cell_absorption_opacity(i,0,0,wl_count) )
           end do
 
-          ! Wavelength [micron] - Total radial optical depth total - absorption - scattering
+          ! Wavelength [um] - Total radial optical depth total - absorption - scattering
           write (100,*) wavelength*1.e6_dp, optical_depth_total, optical_depth_total2, optical_depth_total1
 
           close (100)
@@ -2382,7 +2382,7 @@ contains
 
     else if (photon_source.eq.2) then
        
-       package_energy = emissivity_cumulative(nr-1,ntheta-1,nphi-1) / ( distance_planet * distance_planet * dble(packages) )
+       package_energy = emissivity_cumulative(nr-1,ntheta-1,nphi-1) / (distance_planet * distance_planet * dble(packages))
 
     end if
 
@@ -3243,12 +3243,12 @@ contains
        else if (.not.exist) then
 
           open (100, file=trim(output_name)//'/output/phase.dat', status='new', action='write')
-          write (100,*) "# Phase angle [deg] - Stokes I, Q, U, V [W m-2 micron-1]"
+          write (100,*) "# Phase angle [deg] - Stokes I, Q, U, V [W m-2 um-1]"
           write (100,*)
 
        end if
 
-       ! Phase [deg] - Stokes I, I error, Q, Q error, U, U error, V, V error [W m-2 micron-1]
+       ! Phase [deg] - Stokes I, I error, Q, Q error, U, U error, V, V error [W m-2 um-1]
        
        if (det_phi*180._dp/pi.lt.1._dp) then
 
@@ -3263,7 +3263,6 @@ contains
                error(1,1,3)*1.e-6_dp, detector(1,1,4,1)*1.e-6_dp, error(1,1,4)*1.e-6_dp
           
        else
-          
           write (100,*) det_phi*180._dp/pi, detector(1,1,1,1)*1.e-6_dp, error(1,1,1)*1.e-6_dp, &
                detector(1,1,2,1)*1.e-6_dp, error(1,1,2)*1.e-6_dp, detector(1,1,3,1)*1.e-6_dp, &
                error(1,1,3)*1.e-6_dp, detector(1,1,4,1)*1.e-6_dp, error(1,1,4)*1.e-6_dp
@@ -3285,10 +3284,10 @@ contains
 
           open (100, file=trim(output_name)//'/output/photometry.dat', status='new', action='write')
 
-          write (100,*) "# Wavelength [micron] - Stokes I, Q, U, V [W m-2 micron-1]"
+          write (100,*) "# Wavelength [um] - Stokes I, Q, U, V [W m-2 um-1]"
           write (100,*)
 
-          ! Wavelength [micron] - Stokes I, I error, Q, Q error, U, U error, V, V error [W m-2 micron-1]
+          ! Wavelength [um] - Stokes I, I error, Q, Q error, U, U error, V, V error [W m-2 um-1]
           write (100,*) wavelength*1.e6_dp, 1.e-6_dp*photometry(1), 1.e-6_dp*photometry(2), 1.e-6_dp*photometry(3), &
                1.e-6_dp*photometry(4), 1.e-6_dp*photometry(5), 1.e-6_dp*photometry(6), &
                1.e-6_dp*photometry(7), 1.e-6_dp*photometry(8)
@@ -3311,12 +3310,12 @@ contains
 
           open (100, file=trim(output_name)//'/output/spectrum.dat', status='new', action='write')
 
-          write (100,*) "# Wavelength [micron] - Stokes I, Q, U, V [W m-2 micron-1]"
+          write (100,*) "# Wavelength [um] - Stokes I, Q, U, V [W m-2 um-1]"
           write (100,*)
 
        end if
 
-       ! Wavelength [micron] - Stokes I, Q, U, V [W m-2 micron-1]
+       ! Wavelength [um] - Stokes I, Q, U, V [W m-2 um-1]
        write (100,*) wavelength*1.e6_dp, 1.e-6_dp*detector(1,1,1,1), 1.e-6_dp*detector(1,1,2,1), &
             1.e-6_dp*detector(1,1,3,1), 1.e-6_dp*detector(1,1,4,1)
 
@@ -3339,14 +3338,14 @@ contains
           else if (.not.exist) then
 
              open (100, file=trim(output_name)//'/output/normalization.dat', status='new', action='write')
-             write (100,*) "# Wavelength [micron] - Norm constant 1 [W m-2 micron-1] - Norm constant 2 [W m-2 micron-1]"
+             write (100,*) "# Wavelength [um] - Norm constant 1 [W m-2 um-1] - Norm constant 2 [W m-2 um-1]"
              write (100,*)
 
           end if
 
           call planck_function(t_star, planck_flux)
 
-          ! Wavelength [micron] - Norm1 [W m-2 micron-1] - Norm2 [W m-2 micron-1]
+          ! Wavelength [um] - Norm1 [W m-2 um-1] - Norm2 [W m-2 um-1]
           write (100,*) wavelength*1.e6_dp, 1.e-6_dp*planck_flux*r_star*r_star / &
                (distance_planet*distance_planet), 1.e-6_dp*planck_flux*rfront(nr)*rfront(nr)*r_star*r_star / &
                (orbit*orbit*distance_planet*distance_planet)
@@ -3375,8 +3374,8 @@ contains
 
           open (100, file=trim(output_name)//'/output/luminosity.dat', status='new', action='write')
 
-          write (100,*) "# Wavelength [deg] - Emitted luminosity [W micron-1] - &
-               & Emergent luminosity [W micron-1] - Emergent luminosity [a.u.]"
+          write (100,*) "# Wavelength [deg] - Emitted luminosity [W um-1] - &
+               & Emergent luminosity [W um-1] - Emergent luminosity [a.u.]"
           write (100,*)
           
        end if
@@ -3401,7 +3400,7 @@ contains
 
           open (100, file=trim(output_name)//'/output/cell_depth.dat', status='new', action='write')
 
-          write (100,*) "# Wavelength [micron] - Cell depth"
+          write (100,*) "# Wavelength [um] - Cell depth"
           write (100,*)
           
        end if
@@ -3616,9 +3615,9 @@ contains
           write (out_unit,'(a)') ""
        end if
        if (det_type.eq.1.or.det_type.eq.3) then
-          write (out_unit,'(a,es8.2)') "Wavelength [micron]: ", wavelength*1.e6_dp
+          write (out_unit,'(a,es8.2)') "Wavelength [um]: ", wavelength*1.e6_dp
        else if (det_type.eq.2) then
-          write (out_unit,'(a,es8.2,a,es8.2)') "Spectrum range [micron]: ", wavelengths(1)*1.e6, &
+          write (out_unit,'(a,es8.2,a,es8.2)') "Spectrum range [um]: ", wavelengths(1)*1.e6, &
                " - ", wavelengths(size(wavelengths))*1.e6
        end if
        write (out_unit,'(a)') ""
@@ -3636,8 +3635,8 @@ contains
              do j=0,nphi-1
                 total_optical_depth = 0._dp
                 do k=cell_depth,nr-1
-                   total_optical_depth = total_optical_depth + ( (rfront(k+1)-rfront(k)) * &
-                        cell_opacity(k,i,j,wl_count) )
+                   total_optical_depth = total_optical_depth + ((rfront(k+1)-rfront(k)) * &
+                        cell_opacity(k,i,j,wl_count))
                 end do
                 write (out_unit,'(a,i0,a,i0,a,es10.4)') "[Theta, phi] = [", i, ", ", j, "] --> ", total_optical_depth
              end do
@@ -3687,10 +3686,10 @@ contains
 
                 write (out_unit,'(a)') "Planet integrated flux"
                 write (out_unit,'(a)') ""
-                write (out_unit,'(a,es9.2)') "Stokes I [W m-2 micron-1]: ", photometry(1)*1.e-6_dp
-                write (out_unit,'(a,es9.2)') "Stokes Q [W m-2 micron-1]: ", photometry(3)*1.e-6_dp
-                write (out_unit,'(a,es9.2)') "Stokes U [W m-2 micron-1]: ", photometry(5)*1.e-6_dp
-                write (out_unit,'(a,es9.2)') "Stokes V [W m-2 micron-1]: ", photometry(7)*1.e-6_dp
+                write (out_unit,'(a,es9.2)') "Stokes I [W m-2 um-1]: ", photometry(1)*1.e-6_dp
+                write (out_unit,'(a,es9.2)') "Stokes Q [W m-2 um-1]: ", photometry(3)*1.e-6_dp
+                write (out_unit,'(a,es9.2)') "Stokes U [W m-2 um-1]: ", photometry(5)*1.e-6_dp
+                write (out_unit,'(a,es9.2)') "Stokes V [W m-2 um-1]: ", photometry(7)*1.e-6_dp
                 write (out_unit,'(a)') ""
                 write (out_unit,'(a,es9.2)') "Normalized Stokes I: ", photometry(1)/norm
                 write (out_unit,'(a,es9.2)') "Normalized Stokes Q: ", photometry(3)/norm
@@ -3728,10 +3727,10 @@ contains
 
                 write (out_unit,'(a)') "Planet integrated flux"
                 write (out_unit,'(a)') ""
-                write (out_unit,'(a,es9.2)') "Stokes I [W m-2 micron-1]: ", photometry(1)*1.e-6_dp
-                write (out_unit,'(a,es9.2)') "Stokes Q [W m-2 micron-1]: ", photometry(3)*1.e-6_dp
-                write (out_unit,'(a,es9.2)') "Stokes U [W m-2 micron-1]: ", photometry(5)*1.e-6_dp
-                write (out_unit,'(a,es9.2)') "Stokes V [W m-2 micron-1]: ", photometry(7)*1.e-6_dp
+                write (out_unit,'(a,es9.2)') "Stokes I [W m-2 um-1]: ", photometry(1)*1.e-6_dp
+                write (out_unit,'(a,es9.2)') "Stokes Q [W m-2 um-1]: ", photometry(3)*1.e-6_dp
+                write (out_unit,'(a,es9.2)') "Stokes U [W m-2 um-1]: ", photometry(5)*1.e-6_dp
+                write (out_unit,'(a,es9.2)') "Stokes V [W m-2 um-1]: ", photometry(7)*1.e-6_dp
                 write (out_unit,'(a)') ""
                 write (out_unit,'(a,es9.2)') "-Q/I: ", -photometry(3)/photometry(1)
                 write (out_unit,'(a,es9.2)') " U/I: ", photometry(5)/photometry(1)
@@ -3757,8 +3756,8 @@ contains
 
                 e_pack = emissivity_cumulative(nr-1,ntheta-1,nphi-1)/dble(packages)
                 
-                write (out_unit,'(a,es9.2)') "Total emitted flux [W micron-1] =", sum(flux_emitted)*e_pack*1.e-6_dp
-                write (out_unit,'(a,es9.2)') "Total emergent flux [W micron-1] =", sum(flux_exit)*e_pack*1.e-6_dp
+                write (out_unit,'(a,es9.2)') "Total emitted flux [W um-1] =", sum(flux_emitted)*e_pack*1.e-6_dp
+                write (out_unit,'(a,es9.2)') "Total emergent flux [W um-1] =", sum(flux_exit)*e_pack*1.e-6_dp
                 write (out_unit,'(a)') ""
                 write (out_unit,'(a)') "--------------------------------------------------------"
                 write (out_unit,'(a)') ""
@@ -4168,6 +4167,8 @@ contains
        tau_max = key_value_double
     case("detector:type")
        if (key_value.eq."imaging") then
+          det_type = 1
+       else if (key_value.eq."image") then
           det_type = 1
        else if (key_value.eq."spectrum") then
           det_type = 2

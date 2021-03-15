@@ -6,7 +6,7 @@ linux = false
 FC = gfortran
 DBG = -Wall -Wextra -pedantic -fimplicit-none -fcheck=all -fdump-core -fbacktrace -finit-real=nan -fbounds-check -Wline-truncation -Wcharacter-truncation
 DBG += -Wsurprising -Waliasing -Wunused-parameter -fall-intrinsics -ffree-form -fdump-fortran-optimized -ffpe-trap=invalid,zero
-PAR = -fopenmp
+PAR = -fopenmp -fallow-argument-mismatch -w
 
 ifeq ($(debug),true)
 	FLAGS = -O0 $(PAR) $(DBG)

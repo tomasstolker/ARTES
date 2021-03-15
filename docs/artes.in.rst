@@ -95,8 +95,8 @@ Here you find a list with all possible keywords for the input file that is requi
     ----------------------------------------------------------------------
     * Detector
 
-    * Observation mode (spectrum, phase, imaging)
-    detector:type=imaging
+    * Observation mode (image, spectrum, phase)
+    detector:type=image
 
     * Detector location [degrees]
     * 0 <= detector:theta <= 180

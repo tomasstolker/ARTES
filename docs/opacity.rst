@@ -6,7 +6,7 @@ Creating opacities
 There are several functions available in `tools/opacity.py` that can be used for creating opacities and scattering matrices. To use these functions, Python needs to know where the code is located so it is recommended to add the `tools` folder to the ``PYTHONPATH`` (see :ref:`installation` section). For details on the functions and the parameters, please have a look at the docstrings in the `tools/opacity.py` file.
 
 .. important::
-   ARTES runs the radiative transfer at the wavelengths that are found in the opacity files. Therefore, it is important to make sure that the opacities have been calculated at the required wavelengths. Also, when using multiple opacity files, the same wavelengths should be used in all opacity files. For imaging (``detector:type=imaging``) and phase curves (``detector:type=phase``), the first wavelength of the opacity files is used in case multiple wavelengths are present.
+   ARTES runs the radiative transfer at the wavelengths that are found in the opacity files. Therefore, it is important to make sure that the opacities have been calculated at the required wavelengths. Also, when using multiple opacity files, the same wavelengths should be used in all opacity files. When simulating an image (``detector:type=image``) or phase curve (``detector:type=phase``), the first wavelength of the opacity files is used in case multiple wavelengths are present.
 
 Let's now create some opacities for Rayleigh scattering particles:
 

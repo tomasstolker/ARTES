@@ -1,6 +1,6 @@
+import math
 import os
 import sys
-import math
 
 import configparser
 import numpy as np
@@ -68,7 +68,7 @@ for file in os.listdir(opacity_dir):
         hdulist.append(fits.ImageHDU(np.array(opacity), name='opacity'))
         hdulist.append(fits.ImageHDU(np.array(scatter), name='scattermatrix'))
         hdu = hdulist[0]
-        hdu.header['COMMENT'] = '1. Wavelength [micron]'
+        hdu.header['COMMENT'] = '1. Wavelength [um]'
         hdu.header['COMMENT'] = '2. Extinction [cm2 g-1]'
         hdu.header['COMMENT'] = '3. Absorption [cm2 g-1]'
         hdu.header['COMMENT'] = '4. Scattering [cm2 g-1]'
@@ -77,7 +77,7 @@ for file in os.listdir(opacity_dir):
 
 # Read input file
 
-parser = configparser.SafeConfigParser()
+parser = configparser.ConfigParser()
 parser.read(directory+'atmosphere.in')
 
 # Pressure temperature profile
@@ -423,7 +423,7 @@ with fits.HDUList() as hdunew:
     hdunew.append(fits.ImageHDU(radial, name='radial'))  # [m]
     hdunew.append(fits.ImageHDU(theta, name='polar'))  # [deg]
     hdunew.append(fits.ImageHDU(phi, name='azimuthal'))  # [deg]
-    hdunew.append(fits.ImageHDU(wavelengths, name='wavelength'))  # [micron]
+    hdunew.append(fits.ImageHDU(wavelengths, name='wavelength'))  # [um]
     hdunew.append(fits.ImageHDU(density, name='density'))  # [kg m-3]
     hdunew.append(fits.ImageHDU(temperatureGrid, name='temperature'))  # [K]
     hdunew.append(fits.ImageHDU(opacityScattering, name='scattering'))  # [m-1]

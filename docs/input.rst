@@ -11,7 +11,7 @@ The working folder should contain the following files:
 
 * **atmosphere.fits** - FITS file that contains the 3D atmosphere structure that is used by ARTES. The file can be manually created as long as the correct data structure is used. Alternatively, *tools/atmosphere.py* can be used  with an input file such as *atmosphere.in* which helps to build *atmosphere.fits*.
 
-* **pressure_temperature.dat** - Optional file with a 1D P-T structure. This input file may have a different filename.
+* **pressure_temperature.dat** - Optional file with a 1D P-T structure. This input file should have the exact filename that is shown here.
 
 * **opacity/[FITS]** - The *opacity* folder should contain the opacity files that will be used by *atmosphere.in* to build *atmosphere.fits*.
 
@@ -49,7 +49,7 @@ The *[composition]* section contains a list of all the opacity FITS files that a
 
 Specifically, *FITS number* is the number of the opacity FITS file, *density* is the density of the grid cell, *r_in* and *r_out* are the inner and outer radial boundary, *theta_in* and *theta_out* are the inner and outer polar boundary, and *phi_in* and *phi_out* are the inner and outer azimuthal boundary. The outer most boundaries may also be specified as *nr*, *ntheta*, and *nphi*.
 
-Gas opacities are read automatically by setting *gas: on*. The surface gravity, $\log(g)$ (with g in cm s-2), and mean molecular weight (in g/mol) should be specified in case a P-T profile is used (e.g. as *pressure_temperature.dat*) to set up the radial density structure.
+Gas opacities are read automatically by setting *gas: on*. The surface gravity, :math:`\log(g)` (with g in cm s-2), and mean molecular weight (in g/mol) should be specified in case a P-T profile is used (e.g. as *pressure_temperature.dat*) to set up the radial density structure.
 
 A self-luminous circumplanetary disk can be added as:
 
@@ -88,6 +88,9 @@ Alternatively, the user could also manually create *atmosphere.fits*, for exampl
 
 .. important::
 	The extension with the 3D density structure is no longer required by ARTES. The density is already included in the extensions with the scattering and absorption opacities, which are the product of the particle opacity and mass density. Therefore, the density array may simply contain zeros.
+
+.. important::
+	The extension with the 4D data of the asymmetry parameter is only required when using the modified random walk (MRW) parameter (i.e. setting ``photon:walk`` to a value larger than zero). When not using the MRW, the asymmetry parameters are not used by ARTES so the array may contain zeros.
 
 pressure_temperature.dat
 ------------------------
