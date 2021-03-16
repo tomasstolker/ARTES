@@ -9,7 +9,8 @@ from astropy.io import fits
 from scipy.integrate import simps
 
 
-directory = os.path.dirname(os.path.abspath(sys.argv[1])) + '/'
+config_file = os.path.abspath(sys.argv[1])
+directory = os.path.dirname(config_file) + '/'
 
 # Normalize phase functions
 
@@ -78,7 +79,7 @@ for file in os.listdir(opacity_dir):
 # Read input file
 
 parser = configparser.ConfigParser()
-parser.read(directory+'atmosphere.in')
+parser.read(config_file)
 
 # Pressure temperature profile
 
@@ -251,7 +252,7 @@ if opacityNumber > 0:
         opacityOther[i, :, :] = opacity / 10. # [m2 kg-1]
         scatterOther[i, :, :, :] = scatter
 
-# Read composition from atmosphere.in
+# Read composition from configuration file
 
 composition = []
 rIn = []

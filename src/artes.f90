@@ -4125,6 +4125,12 @@ contains
     case("photon:walk")
        read (key_value, '(e50.0)') key_value_double
        photon_walk = key_value_double
+	   if (photon_walk.gt.0._dp) then
+	       write (6,'(a)') "WARNING: The implementation of the modified random walk hasn't been"
+	       write (6,'(a)') "         properly tested so the results with setting photon:walk > 0"
+		   write (6,'(a)') "         should be inspected carefully and always compared with results"
+		   write (6,'(a)') "         obtained with setting photon:walk=-1 to check for inaccuracies."
+       end if
     case("photon:number")
        read (key_value, '(i50)') key_value_int
        photon_number = key_value_int

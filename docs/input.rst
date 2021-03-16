@@ -22,6 +22,9 @@ artes.in
 
 This file contains the input parameters for ARTES. A full description of all possible keywords is provided in the :ref:`artes.in` section. Command line keywords can be included with the ``-k`` flag, which will overrule the input file keyword.
 
+.. important::
+	The implementation of the modified random walk hasn't been properly tested so the results with setting ``photon:walk`` to a value larger than zero should be inspected carefully and always compared with results obtained with setting ``photon:walk=-1`` to check for inaccuracies.
+
 atmosphere.in
 -------------
 
@@ -88,6 +91,9 @@ Alternatively, the user could also manually create *atmosphere.fits*, for exampl
 
 .. important::
 	The extension with the 3D density structure is no longer required by ARTES. The density is already included in the extensions with the scattering and absorption opacities, which are the product of the particle opacity and mass density. Therefore, the density array may simply contain zeros.
+
+.. important::
+	The extension with the 3D temperature structure is only required for thermal emission of photons (i.e. ``photon:source=planet``). Otherwise, the array with temperatures may simply contain zeros.
 
 .. important::
 	The extension with the 4D data of the asymmetry parameter is only required when using the modified random walk (MRW) parameter (i.e. setting ``photon:walk`` to a value larger than zero). When not using the MRW, the asymmetry parameters are not used by ARTES so the array may contain zeros.
