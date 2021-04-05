@@ -18,10 +18,25 @@ Or with `APT <https://en.wikipedia.org/wiki/APT_(software)>`_ (Linux):
 
     $ sudo apt-get install gfortran
 
+Downloading from Github
+-----------------------
+
+Next, we will download ARTES by cloning the Github repository:
+
+.. code-block:: console
+
+    $ git clone git@github.com:tomasstolker/ARTES.git
+
+New commits can be pulled from Github once a local copy of the repository exists:
+
+.. code-block:: console
+
+    $ git pull origin master
+
 Compiling the source code
 -------------------------
 
-ARTES is now compiled with help of the `Makefile` which is located in the main folder:
+ARTES can now be compiled with help of the `Makefile` which is located in the main folder:
 
 .. code-block:: console
 

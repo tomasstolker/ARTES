@@ -31,20 +31,23 @@ Here you find a list with all possible keywords for the input file that is requi
     * Photon stopping parameter (0-1)
     photon:fstop=1d-5
 
-    * Minimum photon energy (0 < minimum <= 1), otherwise removed after scattering
+    * Minimum photon energy (0 < minimum <= 1) relative to the start energy (= 1)
+    * A photon is stopped if the energy gets smaller
     photon:minimum=1d-20
 
     * Weight cell luminosity, equal photons emitted from all cells (on/off)
+    * Only used when "photon:source=planet"
     photon:weight=off
 
     * Photon scattering (on/off)
     photon:scattering=on
 
     * Thermal photon emission direction (isotropic/biased)
+    * Only used when "photon:source=planet"
     photon:emission=isotropic
 
-    * Biased emission asymmetry parameter
-    * 0 <= bias < 1
+    * Biased emission asymmetry parameter (0 <= bias < 1)
+    * Only used when "photon:source=planet" and "photon:emission=biased"
     photon:bias=0.8
 
     * Modified random walk parameter
@@ -52,19 +55,20 @@ Here you find a list with all possible keywords for the input file that is requi
     * walk < 0 -> off
     photon:walk=-1
 
-    * Photon number for debug output, 0=off
+    * Photon number for debugging
+    * This parameter can be ignored
     photon:number=0
 
     ----------------------------------------------------------------------
-    * Star
+    * Star (only required when "photon:source=star")
 
-    * Stellar temperature [K]
+    * Stellar temperature (K)
     star:temperature=5800
 
-    * Stellar radius [R_sun]
+    * Stellar radius (R_sun)
     star:radius=1
 
-    * Stellar direction [degrees]
+    * Stellar direction (deg)
     * 0 <= star:theta <= 180
     * 0 <= star:phi < 360
     star:theta=90
@@ -79,13 +83,13 @@ Here you find a list with all possible keywords for the input file that is requi
     * Oblateness (0-1)
     planet:oblateness=0
 
-    * Orbital radius [au]
+    * Orbital radius (au)
     planet:orbit=5
 
     * Circumplanetary ring (on/off)
     planet:ring=off
 
-    * Minimum distance to a cell boundary [m]
+    * Minimum distance to the next cell boundary that is considered [m]
     planet:grid=1d-6
 
     * Maximum optical depth, tau > 0
@@ -98,19 +102,19 @@ Here you find a list with all possible keywords for the input file that is requi
     * Observation mode (image, spectrum, phase)
     detector:type=image
 
-    * Detector location [degrees]
+    * Polar and azimuthal direction towards the detector (deg)
     * 0 <= detector:theta <= 180
     * 0 <= detector:phi < 360
     detector:theta=90
     detector:phi=90
 
-    * Number of detector pixels in x and y direction
+    * Number of detector pixels in both dimensions
     detector:pixel=25
 
-    * Distance [pc]
+    * Distance between planet and detector (pc)
     detector:distance=10
 
-    * Rotation angle [deg]
+    * Rotation angle of the detector (deg)
     * 0 < detector:angle < 360
     * angle < 0 -> off
     detector:angle=-1
@@ -118,11 +122,11 @@ Here you find a list with all possible keywords for the input file that is requi
     ----------------------------------------------------------------------
     * Output
 
-    * Debug errors (on/off)
+    * Output errors for debugging (on/off)
     output:debug=off
 
-    * Global energy flow (on/off)
+    * Track the global photon movement (on/off)
     output:global=off
 
-    * Latitudinal energy flow (on/off)
+    * Track the latitudinal photon movement (on/off)
     output:latitudinal=off

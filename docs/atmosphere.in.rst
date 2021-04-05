@@ -30,7 +30,7 @@ Here is an example of the available parameters for the input file that is requir
     molweight: 2.3
 
     ; Log g [cm s-2]
-    logg: 4.0
+    log_g: 4.0
 
     ; FITS files with opacities and scattering matrices
     fits01: clouds.fits
