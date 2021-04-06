@@ -611,9 +611,9 @@ def opacity_dhs(ri_file,
 
 
 def opacity_molecules(pt_file,
-                      wavel_range=(0.5, 20.0),
+                      wavel_range=(0.5, 20.),
                       mmw=2.3,
-                      depolarization=0.0):
+                      depolarization=0.):
     """
     Function to create opacities and scattering matrices for molecules.
 
@@ -621,12 +621,12 @@ def opacity_molecules(pt_file,
     ----------
     pt_file : str
         ASCII file with the pressure-temperature profile.
-    wavelength : tuple(float, float)
+    wavel_range : tuple(float, float)
         Tuple with the minimum and maximum wavelength (um)
-    depolarization : float
-        Depolarization factor.
     mmw : float
         Mean molecular weight (g/mol).
+    depolarization : float
+        Depolarization factor.
 
     Returns
     -------
@@ -640,6 +640,10 @@ def opacity_molecules(pt_file,
         os.makedirs('opacity/')
 
     pressure, temperature = np.loadtxt(pt_file, unpack=True)
+
+    if isinstance(pressure, np.float32) or isinstance(pressure, np.float64):
+        pressure = np.array([pressure])
+        temperature = np.array([temperature])
 
     def get_opacity(filenumber):
         """

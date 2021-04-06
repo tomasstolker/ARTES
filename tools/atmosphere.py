@@ -1,8 +1,8 @@
+import configparser
 import math
 import os
 import sys
 
-import configparser
 import numpy as np
 
 from astropy.io import fits
@@ -35,28 +35,28 @@ for file in os.listdir(opacity_dir):
 
         if elements == 6:
 
-            scatterNew = np.zeros((180,16,wavelengths))
+            scatter_new = np.zeros((180, 16, wavelengths))
 
             for i in range(wavelengths):
                 for j in range(180):
 
-                    scatterNew[j, 0, i] = scatter[j, 0, i]
-                    scatterNew[j, 1, i] = scatter[j, 1, i]
-                    scatterNew[j, 4, i] = scatter[j, 1, i]
-                    scatterNew[j, 5, i] = scatter[j, 2, i]
-                    scatterNew[j, 10, i] = scatter[j, 3, i]
-                    scatterNew[j, 11, i] = scatter[j, 4, i]
-                    scatterNew[j, 14, i] = -scatter[j, 4, i]
-                    scatterNew[j, 15, i] = scatter[j, 5, i]
+                    scatter_new[j, 0, i] = scatter[j, 0, i]
+                    scatter_new[j, 1, i] = scatter[j, 1, i]
+                    scatter_new[j, 4, i] = scatter[j, 1, i]
+                    scatter_new[j, 5, i] = scatter[j, 2, i]
+                    scatter_new[j, 10, i] = scatter[j, 3, i]
+                    scatter_new[j, 11, i] = scatter[j, 4, i]
+                    scatter_new[j, 14, i] = -scatter[j, 4, i]
+                    scatter_new[j, 15, i] = scatter[j, 5, i]
 
-            scatter = scatterNew
+            scatter = scatter_new
     
         for j in range(wavelengths):
 
-            p11Int = scatter[:,0,j]
-            norm = simps(p11Int*np.sin(angle), angle)
+            p11_int = scatter[:,0,j]
+            norm = simps(p11_int*np.sin(angle), angle)
             norm *= 2.*math.pi
-            scatter[:,:,j] /= norm
+            scatter[:, :, j] /= norm
 
         # Write updated FITS file
 
@@ -87,7 +87,7 @@ radial = []
 theta = []
 phi = []
 
-gasConstant = 8.3144621 # [J K-1 mol-1]
+gas_constant = 8.3144621 # [J K-1 mol-1]
 
 # Planet radius [Rjup]
 r_planet = float(parser.get('grid', 'radius'))
@@ -99,7 +99,7 @@ ring = parser.has_option('composition', 'ring')
 # Gas opacities [on/off]
 gas = parser.getboolean('composition', 'gas')
 
-densityGas = []
+density_gas = []
 
 if os.path.isfile(directory+'pressure_temperature.dat'):
 
@@ -111,25 +111,33 @@ if os.path.isfile(directory+'pressure_temperature.dat'):
 
     # Pressure temperature profile
     pressure, temperature = np.loadtxt(directory+'pressure_temperature.dat', unpack=True)
+
+    if isinstance(pressure, np.float32) or isinstance(pressure, np.float64):
+        pressure = np.array([pressure])
+        temperature = np.array([temperature])
+
     # [bar] -> [Pa]
     pressure *= 1.e5
     # Reverse order
     pressure = pressure[::-1]
     temperature = temperature[::-1]
 
-    scaleHeight = np.zeros(len(pressure))
-    densityGas = np.zeros(len(pressure))
+    scale_height = np.zeros(len(pressure))
+    density_gas = np.zeros(len(pressure))
     radial = np.zeros(len(pressure))
 
     radial[0] = 0.
-    scaleHeight[0] =  gasConstant * temperature[0] / ( mmw * gravity )
-    densityGas[0] = pressure[0] / ( gravity * scaleHeight[0] )
+    scale_height[0] =  gas_constant * temperature[0] / ( mmw * gravity )
+    density_gas[0] = pressure[0] / ( gravity * scale_height[0] )
+
+    if len(pressure) == 1:
+        raise ValueError('Minimum 2 pressures are required in pressure_temperature.dat')
 
     for i in range(1, len(pressure)):
 
-        scaleHeight[i] =  gasConstant * temperature[i] / ( mmw * gravity ) # [m]
-        densityGas[i] = pressure[i] / ( gravity * scaleHeight[i] ) # [kg m-3]
-        radial[i] = radial[i-1] - scaleHeight[i] * np.log( pressure[i] / pressure[i-1] ) # [m]
+        scale_height[i] =  gas_constant * temperature[i] / ( mmw * gravity ) # [m]
+        density_gas[i] = pressure[i] / ( gravity * scale_height[i] ) # [kg m-3]
+        radial[i] = radial[i-1] - scale_height[i] * np.log( pressure[i] / pressure[i-1] ) # [m]
 
         if radial[i]-radial[i-1] < 0.:
             print('Radial error')
@@ -139,8 +147,8 @@ if os.path.isfile(directory+'pressure_temperature.dat'):
 
     pressure = pressure[:-1]
     temperature = temperature[:-1]
-    scaleHeight = scaleHeight[:-1]
-    densityGas = densityGas[:-1]
+    scale_height = scale_height[:-1]
+    density_gas = density_gas[:-1]
     radialGas = radial[:-1]
     
 else:
@@ -198,98 +206,102 @@ if gas:
     nwav = np.size(opacity, 1)
     wavelengths = opacity[0]
 
-    opacityGas = np.zeros((np.size(densityGas), 4, nwav))
-    scatterGas = np.zeros((np.size(densityGas), 180, 16, nwav))
+    opacity_gas = np.zeros((np.size(density_gas), 4, nwav))
+    scatter_gas = np.zeros((np.size(density_gas), 180, 16, nwav))
     
-    for i in range(np.size(densityGas)):
-        
-        gasFITS = directory+'opacity/gas_opacity_'+str(i+1).zfill(2)+'.fits'
-        hdulist = fits.open(gasFITS)
+    for i in range(np.size(density_gas)):
+        gas_fits = directory+'opacity/gas_opacity_'+str(i+1).zfill(2)+'.fits'
+        hdulist = fits.open(gas_fits)
         opacity = hdulist[0].data
         scatter = hdulist[1].data
         hdulist.close()
         
-        opacityGas[i, :, :] = opacity / 10. # [m2 kg-1]
-        scatterGas[i, :, :, :] = scatter
+        opacity_gas[i, :, :] = opacity / 10. # [m2 kg-1]
+        scatter_gas[i, :, :, :] = scatter
 
 # Read other opacity files
 
-opacityNumber = 1
+opacity_num = 1
 while True:
 
-    fitsNumber = 'fits'+str(opacityNumber).zfill(2)
+    fits_num = 'fits'+str(opacity_num).zfill(2)
+
     try:
-        parser.get('composition', fitsNumber)
+        parser.get('composition', fits_num)
     except:
         configparser.NoOptionError
         break
 
-    opacityNumber += 1
+    opacity_num += 1
 
-opacityNumber -= 1
+opacity_num -= 1
 
-if opacityNumber > 0:
+if opacity_num > 0:
     
-    fitsFile = parser.get('composition', 'fits01')
-    opacity = fits.getdata(directory+'opacity/'+fitsFile)
+    fits_file = parser.get('composition', 'fits01')
+    opacity = fits.getdata(directory+'opacity/'+fits_file)
     nwav = np.size(opacity, 1)
     wavelengths = opacity[0]
 
-    opacityOther = np.zeros((opacityNumber, 4, nwav))
-    scatterOther = np.zeros((opacityNumber, 180, 16, nwav))
+    opacity_other = np.zeros((opacity_num, 4, nwav))
+    scatter_other = np.zeros((opacity_num, 180, 16, nwav))
 
-    for i in range(opacityNumber):
+    for i in range(opacity_num):
 
-        fitsNumber = 'fits'+str(i+1).zfill(2)
-        fitsFile = directory+'opacity/'+parser.get('composition', fitsNumber)
+        fits_num = 'fits'+str(i+1).zfill(2)
+        fits_file = directory+'opacity/'+parser.get('composition', fits_num)
 
-        hdulist = fits.open(fitsFile)
+        hdulist = fits.open(fits_file)
         opacity = hdulist[0].data
         scatter = hdulist[1].data
         hdulist.close()
 
         # Also wavelength divided by 10, but not needed
-        opacityOther[i, :, :] = opacity / 10. # [m2 kg-1]
-        scatterOther[i, :, :, :] = scatter
+        opacity_other[i, :, :] = opacity / 10. # [m2 kg-1]
+        scatter_other[i, :, :, :] = scatter
 
 # Read composition from configuration file
 
 composition = []
-rIn = []
-rOut = []
-thetaIn = []
-thetaOut = []
-phiIn = []
-phiOut = []
-densityOther = []
+r_in = []
+r_out = []
+theta_in = []
+theta_out = []
+phi_in = []
+phi_out = []
+density_other = []
 
 i = 1
+
 while True:
-	
-    opacityNumber = 'opacity'+str(i).zfill(2)
+
+    opacity_num = 'opacity'+str(i).zfill(2)
+
     try:
-        parser.get('composition', opacityNumber)
+        parser.get('composition', opacity_num)
     except:
         configparser.NoOptionError
         break
 
-    a = parser.get('composition', opacityNumber)
+    a = parser.get('composition', opacity_num)
     aa = [ chunk.strip() for chunk in a.split(',') ]
 
     if 'nr' in aa[3]:
         aa[3] = nr-1
+
     if 'ntheta' in aa[5]:
         aa[5] = ntheta-1
+
     if 'nphi' in aa[7]:
         aa[7] = nphi
         
     composition.append(int(aa[0]))
-    rIn.append(int(aa[2]))
-    rOut.append(int(aa[3]))
-    thetaIn.append(int(aa[4]))
-    thetaOut.append(int(aa[5]))
-    phiIn.append(int(aa[6]))
-    phiOut.append(int(aa[7]))
+    r_in.append(int(aa[2]))
+    r_out.append(int(aa[3]))
+    theta_in.append(int(aa[4]))
+    theta_out.append(int(aa[5]))
+    phi_in.append(int(aa[6]))
+    phi_out.append(int(aa[7]))
 	
     try:
         float(aa[1])
@@ -298,14 +310,14 @@ while True:
         check = False
 
     if check:
-        densityOther.append(float(aa[1])*1e3) # [kg m-3]
+        density_other.append(float(aa[1])*1e3) # [kg m-3]
 
     i += 1
 
 # Opacity x density [m-1]
 
-opacityScattering = np.zeros((nwav, nphi, ntheta-1, nr-1))
-opacityAbsorption = np.zeros((nwav, nphi, ntheta-1, nr-1))
+opacity_scattering = np.zeros((nwav, nphi, ntheta-1, nr-1))
+opacity_absorption = np.zeros((nwav, nphi, ntheta-1, nr-1))
 scatter = np.zeros((180, 16, nwav, nphi, ntheta-1, nr-1))
 density = np.zeros((nphi, ntheta-1, nr-1))
 
@@ -315,52 +327,52 @@ if gas:
         for j in range(ntheta-1):
             for k in range(nphi):
                 for m in range(nwav):
-                    opacityAbsorption[m, k, j, i] = densityGas[i] * opacityGas[i, 2, m]                    
-                    opacityScattering[m, k, j, i] = densityGas[i] * opacityGas[i, 3, m]
-                    scatter[:, :, m, k, j, i] = scatterGas[i, :, :, m]
+                    opacity_absorption[m, k, j, i] = density_gas[i] * opacity_gas[i, 2, m]                    
+                    opacity_scattering[m, k, j, i] = density_gas[i] * opacity_gas[i, 3, m]
+                    scatter[:, :, m, k, j, i] = scatter_gas[i, :, :, m]
 
     for i in range(nr-1):
-        density[:, :, i] = densityGas[i]  # [kg m-3]
+        density[:, :, i] = density_gas[i]  # [kg m-3]
 
 if len(composition) > 0:
     
     for n in range(len(composition)):
         for m in range(nwav):
-            for k in range(phiIn[n], phiOut[n]):
-                for j in range(thetaIn[n], thetaOut[n]):
-                    for i in range(rIn[n], rOut[n]):
+            for k in range(phi_in[n], phi_out[n]):
+                for j in range(theta_in[n], theta_out[n]):
+                    for i in range(r_in[n], r_out[n]):
                         
-                        oScat = densityOther[n]*opacityOther[composition[n]-1, 3, m]
-                        oAbs = densityOther[n]*opacityOther[composition[n]-1, 2, m]
+                        oScat = density_other[n]*opacity_other[composition[n]-1, 3, m]
+                        oAbs = density_other[n]*opacity_other[composition[n]-1, 2, m]
                         
                         if density[k, j, i] == 0.:
-                            scatter[:, :, m, k, j, i] = scatterOther[composition[n]-1, :, :, m]
+                            scatter[:, :, m, k, j, i] = scatter_other[composition[n]-1, :, :, m]
 
                         elif density[k, j, i] > 0.:
-                            weight = (oScat+oAbs)/(oScat+oAbs+opacityScattering[m, k, j, i]+opacityAbsorption[m, k, j, i])
+                            weight = (oScat+oAbs)/(oScat+oAbs+opacity_scattering[m, k, j, i]+opacity_absorption[m, k, j, i])
                             scatter[:, :, m, k, j, i] *= (1.-weight)
-                            scatter[:, :, m, k, j, i] += weight*scatterOther[composition[n]-1, :, :, m]
+                            scatter[:, :, m, k, j, i] += weight*scatter_other[composition[n]-1, :, :, m]
 
-                        opacityScattering[m, k, j, i] += oScat
-                        opacityAbsorption[m, k, j, i] += oAbs
+                        opacity_scattering[m, k, j, i] += oScat
+                        opacity_absorption[m, k, j, i] += oAbs
 
     for n in range(len(composition)):
-        for k in range(phiIn[n], phiOut[n]):
-            for j in range(thetaIn[n], thetaOut[n]):
-                for i in range(rIn[n], rOut[n]):
-                    density[k, j, i] += densityOther[composition[n]-1] # [kg m-3]
+        for k in range(phi_in[n], phi_out[n]):
+            for j in range(theta_in[n], theta_out[n]):
+                for i in range(r_in[n], r_out[n]):
+                    density[k, j, i] += density_other[composition[n]-1] # [kg m-3]
 
 
 # Temperature [K]
 
-temperatureGrid = np.zeros((nphi, ntheta-1, nr-1))
+temperature_grid = np.zeros((nphi, ntheta-1, nr-1))
 
 if os.path.isfile(directory+'pressure_temperature.dat'):
 
     for k in range(nphi):
         for j in range(ntheta-1):
             for i in range(nr-1):
-                temperatureGrid[k, j, i] = temperature[i]
+                temperature_grid[k, j, i] = temperature[i]
 
 # Ring system
 
@@ -383,7 +395,7 @@ if ring:
     
     ring_temperature = np.zeros((nphi, ntheta-1, 2))
     ring_temperature[:, int(aa[5]):int(aa[6]), 1] = float(aa[2])
-    temperatureGrid = np.append(temperatureGrid, ring_temperature, axis=2)
+    temperature_grid = np.append(temperature_grid, ring_temperature, axis=2)
 
     dust2gas = float(aa[7])
     gas_abs = float(aa[8]) # [cm2 g-1]
@@ -394,18 +406,18 @@ if ring:
     ring_scatter = np.zeros((180, 16, nwav, nphi, ntheta-1, 2))
     
     for m in range(nwav):
-        oScat = dust2gas*float(aa[1])*opacityOther[int(aa[0])-1, 3, m] + (1.-dust2gas)*float(aa[1])*gas_scat
-        oAbs = dust2gas*float(aa[1])*opacityOther[int(aa[0])-1, 2, m] + (1.-dust2gas)*float(aa[1])*gas_abs
+        oScat = dust2gas*float(aa[1])*opacity_other[int(aa[0])-1, 3, m] + (1.-dust2gas)*float(aa[1])*gas_scat
+        oAbs = dust2gas*float(aa[1])*opacity_other[int(aa[0])-1, 2, m] + (1.-dust2gas)*float(aa[1])*gas_abs
 
         ring_opacity_scat[m, :, int(aa[5]):int(aa[6]), 1] = oScat
         ring_opacity_abs[m, :, int(aa[5]):int(aa[6]), 1] = oAbs
         
         for i in range(180):
             for j in range(16):
-                ring_scatter[i, j, m, :, int(aa[5]):int(aa[6]), 1] = scatterOther[int(aa[0])-1, i, j, m]
+                ring_scatter[i, j, m, :, int(aa[5]):int(aa[6]), 1] = scatter_other[int(aa[0])-1, i, j, m]
         
-    opacityScattering = np.append(opacityScattering, ring_opacity_scat, axis=3)
-    opacityAbsorption = np.append(opacityAbsorption, ring_opacity_abs, axis=3)
+    opacity_scattering = np.append(opacity_scattering, ring_opacity_scat, axis=3)
+    opacity_absorption = np.append(opacity_absorption, ring_opacity_abs, axis=3)
     scatter = np.append(scatter, ring_scatter, axis=5)
 
 # Asymmetry parameter
@@ -426,9 +438,9 @@ with fits.HDUList() as hdunew:
     hdunew.append(fits.ImageHDU(phi, name='azimuthal'))  # [deg]
     hdunew.append(fits.ImageHDU(wavelengths, name='wavelength'))  # [um]
     hdunew.append(fits.ImageHDU(density, name='density'))  # [kg m-3]
-    hdunew.append(fits.ImageHDU(temperatureGrid, name='temperature'))  # [K]
-    hdunew.append(fits.ImageHDU(opacityScattering, name='scattering'))  # [m-1]
-    hdunew.append(fits.ImageHDU(opacityAbsorption, name='absorption'))  # [m-1]
+    hdunew.append(fits.ImageHDU(temperature_grid, name='temperature'))  # [K]
+    hdunew.append(fits.ImageHDU(opacity_scattering, name='scattering'))  # [m-1]
+    hdunew.append(fits.ImageHDU(opacity_absorption, name='absorption'))  # [m-1]
     hdunew.append(fits.ImageHDU(scatter, name='scattermatrix'))
     hdunew.append(fits.ImageHDU(asymmetry, name='asymmetry'))
     hdunew.writeto(directory+'atmosphere.fits', overwrite=True)
