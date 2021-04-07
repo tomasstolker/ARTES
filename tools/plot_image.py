@@ -181,7 +181,7 @@ for i in range(npix):
     for j in range(npix):
         if pol_frac[j, i] > 0. and error_p_frac[j, i] < 0.1 and i%k == m and j%k == m:
             plt.quiver(float(i)-npix/2.+0.5, float(j)-npix/2.+0.5,
-                       math.cos(pol_ang[j, i]+math.pi), math.sin(pol_ang[j, i]+math.pi),
+                       math.cos(pol_ang[j, i]+math.pi/2.), math.sin(pol_ang[j, i]+math.pi/2.),
                        angles='xy', scale=scaling/pol_frac[j,i], color='#66CCFF',
                        edgecolor='#66CCFF', pivot='middle', headwidth=0, headlength=0,
                        headaxislength=0, width=0.002)

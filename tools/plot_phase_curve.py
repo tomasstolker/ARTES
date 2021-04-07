@@ -23,6 +23,11 @@ if not os.path.exists(plot_dir):
 
 phase, stokes_i, error_i, stokes_q, error_q, stokes_u, error_U, stokes_v, error_v = np.loadtxt(stokes_files, unpack=True)
 
+# Change the sign of Stokes Q/U. The required sign for the phase curve convention depends
+# on the polar direction angle to the detector, which is set to 90 deg for the phase curves.
+stokes_q *= -1.
+stokes_u *= -1.
+
 if os.path.exists(norm_file):
     # Reflected light normalization (W m-2 um-1)
     _, _, norm = np.loadtxt(norm_file, unpack=True)
