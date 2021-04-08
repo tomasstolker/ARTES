@@ -1224,10 +1224,10 @@ contains
       integer, intent(out)  :: cell_emission(3), face_emission(2)
       integer               :: i, j, k
       real(dp), intent(out) :: x_emission, y_emission, z_emission, emission_direction(3), r_disk, phi_disk, bias_weight
-      real(dp)              :: alpha, beta, rot_matrix(3, 3), disk(2), emissivity_cumulative_sampled, cos_phi_sampled
+      real(dp)              :: cos_theta, beta, rot_matrix(3, 3), disk(2), emissivity_cumulative_sampled, cos_phi_sampled
       real(dp)              :: r_sampled, phi_sampled, phase_obs, sin_theta_sampled, cos_theta_sampled, emis_prev, xi
       real(dp)              :: theta_direction, phi_direction, x_temp, y_temp, z_temp, sin_phi_sampled
-      real(dp)              :: radial_unit(3), y_bias, cos_phi_disk, sin_phi_disk
+      real(dp)              :: surface_normal(3), ref_normal(3), ref_normal_new(3), y_bias, cos_phi_disk, sin_phi_disk
       logical               :: solution, grid_exit, cell_ok
 
       solution = .false.
@@ -1426,27 +1426,49 @@ contains
          else if (photon_emission .eq. 2) then
 
             ! Biased upward (Gordon 1987)
-            ! http://www.oceanopticsbook.info/view/monte_carlo_simulation/importance_sampling
+            ! https://www.oceanopticsbook.info/view/monte-carlo-simulation/importance-sampling
 
-            call random(thread_id, xi)
-            y_bias = (1._dp + photon_bias)*tan(pi*xi/2._dp)/sqrt(1._dp - photon_bias*photon_bias)
-            alpha = (1._dp - y_bias*y_bias)/(1._dp + y_bias*y_bias)
+            ! Local radial vector (i.e. normal vector to sphere surface)
+
+            surface_normal(1) = x_emission/(oblate_x*oblate_x)
+            surface_normal(2) = y_emission/(oblate_y*oblate_y)
+            surface_normal(3) = z_emission/(oblate_z*oblate_z)
+
+            ! Make the vector a unit vector
+
+            surface_normal = surface_normal/sqrt(surface_normal(1)**2 + surface_normal(2)**2 + surface_normal(3)**2)
+
+            ! Initiate dummy reference normal. After emit_photon, the reference normal is again initiated.
+
+            call init_ref_normal(surface_normal, ref_normal)
+
+            ! Since the photon is unpolarized, the direction does not matter as long as it is
+            ! orthogonal to the direction of propagation (see Eq. 27 in Peest et al. 2017).
+            ! Sample a uniform azimuthal scattering.
 
             call random(thread_id, xi)
             beta = 2._dp*pi*xi
 
-            ! Local radial vector, normal vector to sphere
-            radial_unit(1) = x_emission/(oblate_x*oblate_x)
-            radial_unit(2) = y_emission/(oblate_y*oblate_y)
-            radial_unit(3) = z_emission/(oblate_z*oblate_z)
-            radial_unit = radial_unit/sqrt(radial_unit(1)**2 + radial_unit(2)**2 + radial_unit(3)**2)
+            ! Calculate the new reference normal
 
-            ! Photon emission direction
-!             call direction_cosine(-alpha, beta, cos(2._dp*beta), radial_unit, emission_direction)
+            call new_reference(beta, surface_normal, ref_normal, ref_normal_new)
+
+            ! Sample the biased emission angle from cumulative distribution function
+            ! cos_theta = 1 -> radially inward, cos_theta = -1 -> radially outward
+
+            call random(thread_id, xi)
+            y_bias = (1._dp + photon_bias)*tan(pi*xi/2._dp)/sqrt(1._dp - photon_bias**2)
+            cos_theta = (1._dp - y_bias**2)/(1._dp + y_bias**2)
+
+!             call sample_biased(thread_id, cos_theta)
+
+            ! Calculate the emission direction (i.e. the new direction vector)
+
+            call new_direction(cos_theta, surface_normal, ref_normal_new, emission_direction)
 
             ! Weight factor
-            bias_weight = (pi*sqrt(1._dp - alpha*alpha)*(1._dp + photon_bias*alpha))/ &
-                          (2._dp*sqrt(1._dp - photon_bias*photon_bias))
+            bias_weight = (pi*sqrt(1._dp - cos_theta**2)*(1._dp + photon_bias*cos_theta))/ &
+                          (2._dp*sqrt(1._dp - photon_bias**2))
 
          end if
 
@@ -1857,6 +1879,47 @@ contains
       s2b = sin(2._dp*beta)
 
    end subroutine sample_scattering_2
+
+   subroutine sample_biased(thread_id, cos_theta)
+
+      integer               :: i
+      integer, intent(in)   :: thread_id
+      real(dp), intent(out) :: cos_theta
+      real(dp)              :: cdf_angle(0:180), pdf_angle, cdf_sample, xi, theta
+
+      ! Azimuthal angle sampling
+
+      cdf_angle(0) = 0._dp
+
+      do i = 1, 180
+
+         ! Calculate the intensity for different azimuthal angles
+
+         pdf_angle = sqrt(1._dp - photon_bias**2)/(pi*(1._dp + photon_bias*cos(dble(i)*pi/180._dp)))
+
+         cdf_angle(i) = cdf_angle(i - 1) + pdf_angle
+
+      end do
+
+      call random(thread_id, xi)
+      cdf_sample = xi*cdf_angle(180)
+
+      do i = 1, 180
+
+         if (cdf_sample .ge. cdf_angle(i - 1) .and. cdf_sample .le. cdf_angle(i)) then
+
+            theta = dble(i - 1) + (cdf_sample - cdf_angle(i - 1))* &
+                    (dble(i) - dble(i - 1))/(cdf_angle(i) - cdf_angle(i - 1))
+
+            cos_theta = cos(theta*pi/180._dp)
+
+            exit
+
+         end if
+
+      end do
+
+   end subroutine sample_biased
 
    subroutine get_mueller(theta_scat, cell_in, mueller_matrix)
 
