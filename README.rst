@@ -7,7 +7,7 @@ ARTES
    :target: http://artes.readthedocs.io
 
 .. image:: https://img.shields.io/badge/license-MIT-blue.svg?style=flat
-    :target: https://github.com/tomasstolker/ARTES/blob/master/LICENSE
+    :target: https://github.com/tomasstolker/ARTES/blob/main/LICENSE
 
 .. image:: http://img.shields.io/badge/arXiv-1706.09427-orange.svg?style=flat
     :target: http://arxiv.org/abs/1706.09427

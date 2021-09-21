@@ -31,7 +31,7 @@ New commits can be pulled from Github once a local copy of the repository exists
 
 .. code-block:: console
 
-    $ git pull origin master
+    $ git pull origin main
 
 Compiling the source code
 -------------------------
