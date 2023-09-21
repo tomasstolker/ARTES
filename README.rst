@@ -27,6 +27,6 @@ Please cite `Stolker et al. (2017) <http://adsabs.harvard.edu/abs/2017A%26A...60
 License
 -------
 
-Copyright 2018-2021 Tomas Stolker
+Copyright 2018-2023 Tomas Stolker
 
 ARTES is distributed under the MIT License. See the LICENSE file for the terms and conditions.

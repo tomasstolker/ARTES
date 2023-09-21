@@ -14,13 +14,11 @@ import os
 import sys
 sys.path.insert(0, os.path.abspath('../'))
 
-
 # -- Project information -----------------------------------------------------
 
 project = 'ARTES'
-copyright = '2018-2021, Tomas Stolker'
+copyright = '2018-2023, Tomas Stolker'
 author = 'Tomas Stolker'
-
 
 # -- General configuration ---------------------------------------------------
 
@@ -54,7 +52,6 @@ html_theme_options = {
     'use_issues_button': True,
     'use_repository_button': True,
     'use_download_button': True,
-    'logo_only': True,
 }
 
 # Add any paths that contain custom static files (such as style sheets) here,
