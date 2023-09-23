@@ -97,6 +97,7 @@ install: start compile end
 
 clean:
 	rm -f artes.o
+	rm -f src/artes.*.so
 	rm -rf docs/_build
 	find . -name '*.pyc' -exec rm -f {} +
 	find . -name '__pycache__' -exec rm -rf {} +

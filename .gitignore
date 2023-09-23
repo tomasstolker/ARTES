@@ -1,5 +1,6 @@
 bin/*
 lib/*
+src/artes.*.so
 dat/molecules/*
 docs/_build
 artes.o

@@ -46,7 +46,6 @@ program artes
    real(dp)                  :: det_theta, det_phi                     ! Detector direction [rad]
    real(dp)                  :: det_angle                              ! Detector position angle [rad]
    real(dp)                  :: sin_det_angle, cos_det_angle           ! Sine and cosine of detector position angle
-   real(dp)                  :: theta_phase, phi_phase                 ! Theta and phi coordinate of phase curve detector
    integer                   :: npix                                   ! Number of pixels in x and y direction
    real(dp)                  :: x_max                                  ! Image plane size ranges from [-x_max:x_max]
    real(dp)                  :: y_max                                  ! Image plane size ranges from [-y_max:y_max]
@@ -415,7 +414,7 @@ contains
 
       call init_random_seed
 
-      allocate (state(threads, ns))
+      allocate(state(threads, ns))
       state = 0
 
       do j = 1, ns
@@ -533,10 +532,10 @@ contains
       nmax_mrw = 1000
       ny_mrw = 1000
 
-      allocate (phi_mrw(ny_mrw))
+      allocate(phi_mrw(ny_mrw))
       phi_mrw = 0._dp
 
-      allocate (y_mrw(ny_mrw))
+      allocate(y_mrw(ny_mrw))
       y_mrw = 0._dp
 
       y_mrw(1) = 1._dp
@@ -566,7 +565,7 @@ contains
       integer     :: j, k, l, thread_id, cell(3), cell_out(3), face(2), next_face(2)
       integer     :: face_check(2), cell_check(3), buffer(13), status, iy
       logical     :: grid_exit, surface, check1, check2, check3, check4, cell_error, walk
-      real(dp)    :: face_distance, tau, tau_cell, tau_run, xi, x_out, y_out, z_out, tau_first
+      real(dp)    :: face_distance, tau, tau_cell, tau_run, xi, tau_first
       real(dp)    :: stokes(4), stokes_new(4), theta_scat, beta_scat, cos_theta_scat, scat_matrix(16)
       real(dp)    :: direction(3), direction_new(3), x, y, z, s, x_check, y_check, z_check
       real(dp)    :: r_disk, phi_disk, dpi, dummy, bias_weight, d_mrw, r_min, gamma, c2b, s2b
@@ -579,9 +578,9 @@ contains
 
       !$omp parallel do default(none) private(surface) &
 
-      !$omp& private(x, y, z, s, x_out, y_out, z_out, stokes, stokes_new, direction, direction_new, d_mrw, iy, r_min) &
+      !$omp& private(x, y, z, s, stokes, stokes_new, direction, direction_new, d_mrw, iy, r_min) &
       !$omp& private(face, next_face, face_distance, theta_scat, beta_scat, cos_theta_scat, cell, cell_out) &
-      !$omp& private(scat_matrix, xi, theta_phase, phi_phase, grid_exit, tau_cell, cell_error, thread_id, bias_weight) &
+      !$omp& private(scat_matrix, xi, grid_exit, tau_cell, cell_error, thread_id, bias_weight) &
       !$omp& private(x_check, y_check, z_check, face_check, cell_check, buffer, status, r_disk, phi_disk, walk) &
       !$omp& private(ref_normal, ref_normal_new, stokes_rot, tau, tau_run, tau_first, c2b, s2b, surface_normal) &
 
@@ -1647,22 +1646,22 @@ contains
 
    end subroutine lambertian
 
-   subroutine cartesian_spherical(x, y, z, r, theta, phi)
-
-      ! Transform from Cartesian to spherical coordinates
-      ! The atan2 function returns a value in the range [-pi:pi]
-
-      real(dp), intent(in)  :: x, y, z
-      real(dp), intent(out) :: r, theta, phi
-
-      r = sqrt(x*x + y*y + z*z)
-
-      theta = acos(z/r)
-      phi = atan2(y, x)
-
-      if (phi .lt. 0._dp) phi = phi + 2._dp*pi
-
-   end subroutine cartesian_spherical
+!    subroutine cartesian_spherical(x, y, z, r, theta, phi)
+!
+!       ! Transform from Cartesian to spherical coordinates
+!       ! The atan2 function returns a value in the range [-pi:pi]
+!
+!       real(dp), intent(in)  :: x, y, z
+!       real(dp), intent(out) :: r, theta, phi
+!
+!       r = sqrt(x*x + y*y + z*z)
+!
+!       theta = acos(z/r)
+!       phi = atan2(y, x)
+!
+!       if (phi .lt. 0._dp) phi = phi + 2._dp*pi
+!
+!    end subroutine cartesian_spherical
 
    subroutine spherical_cartesian(r, theta, phi, x, y, z)
 
@@ -1795,136 +1794,136 @@ contains
 
    end subroutine sample_scattering
 
-   subroutine sample_scattering_2(thread_id, stokes, cell_in, theta, beta, cos_theta, c2b, s2b)
+!    subroutine sample_scattering_2(thread_id, stokes, cell_in, theta, beta, cos_theta, c2b, s2b)
+!
+!       integer               :: i
+!       integer, intent(in)   :: thread_id, cell_in(3)
+!       real(dp), intent(in)  :: stokes(4)
+!       real(dp), intent(out) :: theta, beta, cos_theta, c2b, s2b
+!       real(dp)              :: cdf_dist(0:180), scat_matrix(16)
+!       real(dp)              :: p_linear, p_angle, p_ratio, phi_test, xi, xi_sample
+!
+!       ! Scattering angle sampling
+!
+!       call random(thread_id, xi)
+!
+!       xi_sample = xi*cell_p11_int(cell_in(1), cell_in(2), cell_in(3), wl_count)
+!
+!       cdf_dist = 0._dp
+!
+!       do i = 1, 180
+!
+!          cdf_dist(i) = cdf_dist(i - 1) + &
+!                        cell_scatter_matrix(cell_in(1), cell_in(2), cell_in(3), wl_count, 1, i)*sinbeta(i)*pi/180._dp
+!
+!          if (xi_sample .ge. cdf_dist(i - 1) .and. xi_sample .le. cdf_dist(i)) then
+!
+!             theta = (dble(i) - dble(i - 1))*(xi_sample - cdf_dist(i - 1))/ &
+!                     (cdf_dist(i) - cdf_dist(i - 1)) + dble(i - 1)
+!
+!             theta = theta*pi/180._dp
+!
+!             cos_theta = cos(theta)
+!
+!             exit
+!
+!          end if
+!
+!       end do
+!
+!       if (cos_theta .ge. 1._dp) cos_theta = 1._dp - 1.e-10_dp
+!       if (cos_theta .le. -1._dp) cos_theta = -1._dp + 1.e-10_dp
+!
+!       ! Azimuthal angle sampling
+!
+!       cdf_dist = 0._dp
+!
+!       call random(thread_id, xi)
+!       xi_sample = xi/2._dp
+!
+!       call get_mueller(theta, cell_in, scat_matrix)
+!
+!       p_linear = sqrt(stokes(2)**2 + stokes(3)**2)/stokes(1)
+!       p_angle = 0.5_dp*atan2(stokes(3), stokes(2))
+!       p_ratio = scat_matrix(2)/scat_matrix(1)
+!
+!       do i = 1, 180
+!
+!          phi_test = (dble(i) - 0.5_dp)*pi/180._dp
+!
+!          cdf_dist(i) = (phi_test + p_linear*p_ratio*sinbeta(i)*cos(phi_test - 2._dp*p_angle))/(2._dp*pi)
+!
+!          if (xi_sample .ge. cdf_dist(i - 1) .and. xi_sample .le. cdf_dist(i)) then
+!
+!             beta = (dble(i) - dble(i - 1))*(xi_sample - cdf_dist(i - 1))/ &
+!                    (cdf_dist(i) - cdf_dist(i - 1)) + dble(i - 1)
+!
+!             beta = beta*pi/180._dp
+!
+!             exit
+!
+!          end if
+!
+!       end do
+!
+!       call random(thread_id, xi)
+!       if (xi .gt. 0.5_dp) beta = beta + pi
+!
+!       if (beta .ge. 2._dp*pi) beta = 2._dp*pi - 1.e-10_dp
+!       if (beta .le. 0._dp) beta = 1.e-10_dp
+!
+!       ! Calculate cos(2*beta) and sin(2*beta) for the rotation matrix
+!
+!       c2b = cos(2._dp*beta)
+!       s2b = sin(2._dp*beta)
+!
+!    end subroutine sample_scattering_2
 
-      integer               :: i
-      integer, intent(in)   :: thread_id, cell_in(3)
-      real(dp), intent(in)  :: stokes(4)
-      real(dp), intent(out) :: theta, beta, cos_theta, c2b, s2b
-      real(dp)              :: cdf_dist(0:180), scat_matrix(16)
-      real(dp)              :: p_linear, p_angle, p_ratio, phi_test, xi, xi_sample
-
-      ! Scattering angle sampling
-
-      call random(thread_id, xi)
-
-      xi_sample = xi*cell_p11_int(cell_in(1), cell_in(2), cell_in(3), wl_count)
-
-      cdf_dist = 0._dp
-
-      do i = 1, 180
-
-         cdf_dist(i) = cdf_dist(i - 1) + &
-                       cell_scatter_matrix(cell_in(1), cell_in(2), cell_in(3), wl_count, 1, i)*sinbeta(i)*pi/180._dp
-
-         if (xi_sample .ge. cdf_dist(i - 1) .and. xi_sample .le. cdf_dist(i)) then
-
-            theta = (dble(i) - dble(i - 1))*(xi_sample - cdf_dist(i - 1))/ &
-                    (cdf_dist(i) - cdf_dist(i - 1)) + dble(i - 1)
-
-            theta = theta*pi/180._dp
-
-            cos_theta = cos(theta)
-
-            exit
-
-         end if
-
-      end do
-
-      if (cos_theta .ge. 1._dp) cos_theta = 1._dp - 1.e-10_dp
-      if (cos_theta .le. -1._dp) cos_theta = -1._dp + 1.e-10_dp
-
-      ! Azimuthal angle sampling
-
-      cdf_dist = 0._dp
-
-      call random(thread_id, xi)
-      xi_sample = xi/2._dp
-
-      call get_mueller(theta, cell_in, scat_matrix)
-
-      p_linear = sqrt(stokes(2)**2 + stokes(3)**2)/stokes(1)
-      p_angle = 0.5_dp*atan2(stokes(3), stokes(2))
-      p_ratio = scat_matrix(2)/scat_matrix(1)
-
-      do i = 1, 180
-
-         phi_test = (dble(i) - 0.5_dp)*pi/180._dp
-
-         cdf_dist(i) = (phi_test + p_linear*p_ratio*sinbeta(i)*cos(phi_test - 2._dp*p_angle))/(2._dp*pi)
-
-         if (xi_sample .ge. cdf_dist(i - 1) .and. xi_sample .le. cdf_dist(i)) then
-
-            beta = (dble(i) - dble(i - 1))*(xi_sample - cdf_dist(i - 1))/ &
-                   (cdf_dist(i) - cdf_dist(i - 1)) + dble(i - 1)
-
-            beta = beta*pi/180._dp
-
-            exit
-
-         end if
-
-      end do
-
-      call random(thread_id, xi)
-      if (xi .gt. 0.5_dp) beta = beta + pi
-
-      if (beta .ge. 2._dp*pi) beta = 2._dp*pi - 1.e-10_dp
-      if (beta .le. 0._dp) beta = 1.e-10_dp
-
-      ! Calculate cos(2*beta) and sin(2*beta) for the rotation matrix
-
-      c2b = cos(2._dp*beta)
-      s2b = sin(2._dp*beta)
-
-   end subroutine sample_scattering_2
-
-   subroutine sample_biased(thread_id, cos_theta)
-
-      integer               :: i
-      integer, intent(in)   :: thread_id
-      real(dp), intent(out) :: cos_theta
-      real(dp)              :: cdf_angle(0:180), pdf_angle, cdf_sample, xi, theta
-
-      ! Azimuthal angle sampling
-
-      cdf_angle(0) = 0._dp
-
-      do i = 1, 180
-
-         ! Calculate the intensity for different azimuthal angles
-
-         pdf_angle = sqrt(1._dp - photon_bias**2)/(pi*(1._dp + photon_bias*cos(dble(i)*pi/180._dp)))
-
-         cdf_angle(i) = cdf_angle(i - 1) + pdf_angle
-
-      end do
-
-      call random(thread_id, xi)
-      cdf_sample = xi*cdf_angle(180)
-
-      do i = 1, 180
-
-         if (cdf_sample .ge. cdf_angle(i - 1) .and. cdf_sample .le. cdf_angle(i)) then
-
-            theta = dble(i - 1) + (cdf_sample - cdf_angle(i - 1))* &
-                    (dble(i) - dble(i - 1))/(cdf_angle(i) - cdf_angle(i - 1))
-
-            cos_theta = cos(theta*pi/180._dp)
-
-            exit
-
-         end if
-
-      end do
-
-   end subroutine sample_biased
+!    subroutine sample_biased(thread_id, cos_theta)
+!
+!       integer               :: i
+!       integer, intent(in)   :: thread_id
+!       real(dp), intent(out) :: cos_theta
+!       real(dp)              :: cdf_angle(0:180), pdf_angle, cdf_sample, xi, theta
+!
+!       ! Azimuthal angle sampling
+!
+!       cdf_angle(0) = 0._dp
+!
+!       do i = 1, 180
+!
+!          ! Calculate the intensity for different azimuthal angles
+!
+!          pdf_angle = sqrt(1._dp - photon_bias**2)/(pi*(1._dp + photon_bias*cos(dble(i)*pi/180._dp)))
+!
+!          cdf_angle(i) = cdf_angle(i - 1) + pdf_angle
+!
+!       end do
+!
+!       call random(thread_id, xi)
+!       cdf_sample = xi*cdf_angle(180)
+!
+!       do i = 1, 180
+!
+!          if (cdf_sample .ge. cdf_angle(i - 1) .and. cdf_sample .le. cdf_angle(i)) then
+!
+!             theta = dble(i - 1) + (cdf_sample - cdf_angle(i - 1))* &
+!                     (dble(i) - dble(i - 1))/(cdf_angle(i) - cdf_angle(i - 1))
+!
+!             cos_theta = cos(theta*pi/180._dp)
+!
+!             exit
+!
+!          end if
+!
+!       end do
+!
+!    end subroutine sample_biased
 
    subroutine get_mueller(theta_scat, cell_in, mueller_matrix)
 
       integer, intent(in)   :: cell_in(3)
-      integer               :: i, angle_upper, angle_lower
+      integer               :: angle_upper, angle_lower
       real(dp), intent(in)  :: theta_scat
       real(dp), intent(out) :: mueller_matrix(16)
       real(dp)              :: x0, x1, y0(16), y1(16), x_inter
@@ -2099,29 +2098,35 @@ contains
 
       ! Radial grid [m]
 
-      call ftgknj(unit, 'NAXIS', 1, 1, nr, nfound, status)
-      allocate (temp(nr))
+      allocate(naxes(1))
+      call ftgknj(unit, 'NAXIS', 1, 1, naxes, nfound, status)
+      nr = naxes(1)
+      deallocate(naxes)
+      allocate(temp(nr))
       temp = 0._dp
       call ftgpvd(unit, 1, 1, nr, -999._dp, temp, anynul, status)
       nr = nr - 1
-      allocate (rfront(0:nr))
+      allocate(rfront(0:nr))
       rfront = 0._dp
       do i = 0, nr
          rfront(i) = temp(i + 1)
       end do
-      deallocate (temp)
+      deallocate(temp)
 
       ! Theta grid [rad]
 
+      allocate(naxes(1))
       call ftmrhd(unit, 1, hdutype, status)
-      call ftgknj(unit, 'NAXIS', 1, 1, ntheta, nfound, status)
-      allocate (temp(ntheta))
+      call ftgknj(unit, 'NAXIS', 1, 1, naxes, nfound, status)
+      ntheta = naxes(1)
+      deallocate(naxes)
+      allocate(temp(ntheta))
       temp = 0._dp
       call ftgpvd(unit, 1, 1, ntheta, -999._dp, temp, anynul, status)
       ntheta = ntheta - 1
-      allocate (thetafront(0:ntheta))
+      allocate(thetafront(0:ntheta))
       thetafront = 0._dp
-      allocate (thetaplane(0:ntheta))
+      allocate(thetaplane(0:ntheta))
       thetaplane = 0
       do i = 0, ntheta
          thetafront(i) = temp(i + 1)
@@ -2131,59 +2136,65 @@ contains
             thetaplane(i) = 2
          end if
       end do
-      deallocate (temp)
+      deallocate(temp)
       thetafront = thetafront*pi/180.
 
       ! Phi grid [rad]
 
+      allocate(naxes(1))
       call ftmrhd(unit, 1, hdutype, status)
-      call ftgknj(unit, 'NAXIS', 1, 1, nphi, nfound, status)
-      allocate (temp(nphi))
+      call ftgknj(unit, 'NAXIS', 1, 1, naxes, nfound, status)
+      nphi = naxes(1)
+      deallocate(naxes)
+      allocate(temp(nphi))
       temp = 0._dp
       call ftgpvd(unit, 1, 1, nphi, -999._dp, temp, anynul, status)
       nphi = nphi
-      allocate (phifront(0:nphi - 1))
+      allocate(phifront(0:nphi - 1))
       phifront = 0._dp
       do i = 0, nphi - 1
          phifront(i) = temp(i + 1)
       end do
-      deallocate (temp)
+      deallocate(temp)
       phifront = phifront*pi/180.
 
       ! Wavelengths [um]
 
       call ftmrhd(unit, 1, hdutype, status)
-      call ftgknj(unit, 'NAXIS', 1, 1, n_wavelength, nfound, status)
-      allocate (wavelengths(n_wavelength))
+      allocate(naxes(1))
+      call ftgknj(unit, 'NAXIS', 1, 1, naxes, nfound, status)
+      n_wavelength = naxes(1)
+      deallocate(naxes)
+      allocate(wavelengths(n_wavelength))
       wavelengths = 0._dp
       call ftgpvd(unit, 1, 1, n_wavelength, -999._dp, wavelengths, anynul, status)
       wavelengths = wavelengths*1.e-6_dp ! [um] to [m]
 
       ! Density [kg m-3]
 
-      allocate (cell_density(0:nr - 1, 0:ntheta - 1, 0:nphi - 1))
+      allocate(cell_density(0:nr - 1, 0:ntheta - 1, 0:nphi - 1))
       cell_density = 0._dp
-      allocate (naxes(3))
+      allocate(naxes(3))
       naxes = 0
       call ftmrhd(unit, 1, hdutype, status)
       call ftgknj(unit, 'NAXIS', 1, 3, naxes, nfound, status)
       call ftgpvd(unit, 1, 1, naxes(1)*naxes(2)*naxes(3), -999._dp, cell_density, anynul, status)
-      deallocate (cell_density)
+      deallocate(cell_density)
 
       ! Temperature [K]
 
-      allocate (cell_temperature(0:nr - 1, 0:ntheta - 1, 0:nphi - 1))
+      allocate(cell_temperature(0:nr - 1, 0:ntheta - 1, 0:nphi - 1))
       cell_temperature = 0._dp
       call ftmrhd(unit, 1, hdutype, status)
       call ftgknj(unit, 'NAXIS', 1, 3, naxes, nfound, status)
       call ftgpvd(unit, 1, 1, naxes(1)*naxes(2)*naxes(3), -999._dp, cell_temperature, anynul, status)
-      deallocate (naxes)
+      deallocate(naxes)
 
       ! Scattering opacity [m-1]
 
-      allocate (naxes(4))
+      allocate(naxes(4))
       naxes = 0
-      allocate (cell_scattering_opacity(0:nr - 1, 0:ntheta - 1, 0:nphi - 1, n_wavelength))
+      allocate(cell_scattering_opacity(0:nr - 1, 0:ntheta - 1, 0:nphi - 1, n_wavelength))
       cell_scattering_opacity = 0._dp
       call ftmrhd(unit, 1, hdutype, status)
       call ftgknj(unit, 'NAXIS', 1, 4, naxes, nfound, status)
@@ -2191,17 +2202,17 @@ contains
 
       ! Absorption opacity [m-1]
 
-      allocate (cell_absorption_opacity(0:nr - 1, 0:ntheta - 1, 0:nphi - 1, n_wavelength))
+      allocate(cell_absorption_opacity(0:nr - 1, 0:ntheta - 1, 0:nphi - 1, n_wavelength))
       cell_absorption_opacity = 0._dp
       call ftmrhd(unit, 1, hdutype, status)
       call ftgknj(unit, 'NAXIS', 1, 4, naxes, nfound, status)
       call ftgpvd(unit, 1, 1, naxes(1)*naxes(2)*naxes(3)*naxes(4), -999._dp, cell_absorption_opacity, anynul, status)
-      deallocate (naxes)
+      deallocate(naxes)
 
       ! Opacity [m-1]
 
-      allocate (cell_opacity(0:nr - 1, 0:ntheta - 1, 0:nphi - 1, n_wavelength))
-      allocate (cell_albedo(0:nr - 1, 0:ntheta - 1, 0:nphi - 1, n_wavelength))
+      allocate(cell_opacity(0:nr - 1, 0:ntheta - 1, 0:nphi - 1, n_wavelength))
+      allocate(cell_albedo(0:nr - 1, 0:ntheta - 1, 0:nphi - 1, n_wavelength))
       cell_opacity = 0._dp
       cell_albedo = 0._dp
 
@@ -2234,35 +2245,35 @@ contains
 
       ! Scattering matrix
 
-      allocate (naxes(6))
+      allocate(naxes(6))
       naxes = 0
       call ftmrhd(unit, 1, hdutype, status)
       call ftgknj(unit, 'NAXIS', 1, 6, naxes, nfound, status)
-      allocate (cell_scatter_matrix(0:nr - 1, 0:ntheta - 1, 0:nphi - 1, n_wavelength, 16, 180))
+      allocate(cell_scatter_matrix(0:nr - 1, 0:ntheta - 1, 0:nphi - 1, n_wavelength, 16, 180))
       cell_scatter_matrix = 0._dp
       call ftgpvd(unit, 1, 1, naxes(1)*naxes(2)*naxes(3)*naxes(4)*naxes(5)*naxes(6), -999._dp, cell_scatter_matrix, anynul, status)
-      deallocate (naxes)
+      deallocate(naxes)
 
       ! Asymmetry parameter
 
-      allocate (naxes(4))
+      allocate(naxes(4))
       naxes = 0
-      allocate (cell_asymmetry(0:nr - 1, 0:ntheta - 1, 0:nphi - 1, n_wavelength))
+      allocate(cell_asymmetry(0:nr - 1, 0:ntheta - 1, 0:nphi - 1, n_wavelength))
       cell_asymmetry = 0._dp
       call ftmrhd(unit, 1, hdutype, status)
       call ftgknj(unit, 'NAXIS', 1, 4, naxes, nfound, status)
       call ftgpvd(unit, 1, 1, naxes(1)*naxes(2)*naxes(3)*naxes(4), -999._dp, cell_asymmetry, anynul, status)
-      deallocate (naxes)
+      deallocate(naxes)
 
       call ftclos(unit, status)
       call ftfiou(unit, status)
 
       ! Integral of first row elements
 
-      allocate (cell_p11_int(0:nr - 1, 0:ntheta - 1, 0:nphi - 1, n_wavelength))
-      allocate (cell_p12_int(0:nr - 1, 0:ntheta - 1, 0:nphi - 1, n_wavelength))
-      allocate (cell_p13_int(0:nr - 1, 0:ntheta - 1, 0:nphi - 1, n_wavelength))
-      allocate (cell_p14_int(0:nr - 1, 0:ntheta - 1, 0:nphi - 1, n_wavelength))
+      allocate(cell_p11_int(0:nr - 1, 0:ntheta - 1, 0:nphi - 1, n_wavelength))
+      allocate(cell_p12_int(0:nr - 1, 0:ntheta - 1, 0:nphi - 1, n_wavelength))
+      allocate(cell_p13_int(0:nr - 1, 0:ntheta - 1, 0:nphi - 1, n_wavelength))
+      allocate(cell_p14_int(0:nr - 1, 0:ntheta - 1, 0:nphi - 1, n_wavelength))
 
       cell_p11_int = 0._dp
       cell_p12_int = 0._dp
@@ -2324,15 +2335,15 @@ contains
 
          ! Wavelength independent arrays
 
-         allocate (theta_grid_cos(0:ntheta))
+         allocate(theta_grid_cos(0:ntheta))
          theta_grid_cos = 0._dp
-         allocate (theta_grid_sin(0:ntheta))
+         allocate(theta_grid_sin(0:ntheta))
          theta_grid_sin = 0._dp
-         allocate (theta_grid_tan(0:ntheta))
+         allocate(theta_grid_tan(0:ntheta))
          theta_grid_tan = 0._dp
-         allocate (phi_grid_cos(0:nphi - 1))
+         allocate(phi_grid_cos(0:nphi - 1))
          phi_grid_cos = 0._dp
-         allocate (phi_grid_sin(0:nphi - 1))
+         allocate(phi_grid_sin(0:nphi - 1))
          phi_grid_sin = 0._dp
 
          ! Set sine and cosine values of theta faces
@@ -2350,7 +2361,7 @@ contains
 
          ! Cell volume
 
-         allocate (cell_volume(0:nr - 1, 0:ntheta - 1, 0:nphi - 1))
+         allocate(cell_volume(0:nr - 1, 0:ntheta - 1, 0:nphi - 1))
          cell_volume = 0._dp
 
          do k = 0, nphi - 1
@@ -2391,14 +2402,14 @@ contains
 
          if (global) then
 
-            allocate (cell_flow_global(threads, 3, 0:nr - 1, 0:ntheta - 1, 0:nphi - 1))
+            allocate(cell_flow_global(threads, 3, 0:nr - 1, 0:ntheta - 1, 0:nphi - 1))
             cell_flow_global = 0._dp
 
          end if
 
          if (latitudinal) then
 
-            allocate (cell_flow(threads, 4, 0:nr - 1, 0:ntheta - 1, 0:nphi - 1))
+            allocate(cell_flow(threads, 4, 0:nr - 1, 0:ntheta - 1, 0:nphi - 1))
             cell_flow = 0._dp
 
          end if
@@ -2497,13 +2508,13 @@ contains
                end do
             end do
 
-            allocate (cell_weight(0:nr - 1, 0:ntheta - 1, 0:nphi - 1))
+            allocate(cell_weight(0:nr - 1, 0:ntheta - 1, 0:nphi - 1))
             cell_weight = 0._dp
 
-            allocate (cell_luminosity(0:nr - 1, 0:ntheta - 1, 0:nphi - 1))
+            allocate(cell_luminosity(0:nr - 1, 0:ntheta - 1, 0:nphi - 1))
             cell_luminosity = 0._dp
 
-            allocate (emissivity_cumulative(0:nr - 1, 0:ntheta - 1, 0:nphi - 1))
+            allocate(emissivity_cumulative(0:nr - 1, 0:ntheta - 1, 0:nphi - 1))
             emissivity_cumulative = 0._dp
 
             emissivity_total = 0._dp
@@ -2591,12 +2602,12 @@ contains
 
          if (photon_source .eq. 2) then
 
-            allocate (flux_emitted(threads))
+            allocate(flux_emitted(threads))
             flux_emitted = 0._dp
 
          end if
 
-         allocate (flux_exit(threads))
+         allocate(flux_exit(threads))
          flux_exit = 0._dp
 
       end if
@@ -2637,9 +2648,9 @@ contains
 
    subroutine array_start
 
-      allocate (detector(npix, npix, 4, 3))
+      allocate(detector(npix, npix, 4, 3))
       detector = 0._dp
-      allocate (detector_thread(npix, npix, 4, 3, threads))
+      allocate(detector_thread(npix, npix, 4, 3, threads))
       detector_thread = 0._dp
 
    end subroutine array_start
@@ -2654,51 +2665,51 @@ contains
 
          if (photon_source .eq. 2) then
 
-            deallocate (cell_luminosity)
-            deallocate (cell_weight)
-            deallocate (emissivity_cumulative)
-            deallocate (flux_emitted)
+            deallocate(cell_luminosity)
+            deallocate(cell_weight)
+            deallocate(emissivity_cumulative)
+            deallocate(flux_emitted)
 
          end if
 
-         deallocate (flux_exit)
+         deallocate(flux_exit)
 
       else if (i .eq. 2) then
 
          ! Detector arrays
 
-         deallocate (detector)
-         deallocate (detector_thread)
+         deallocate(detector)
+         deallocate(detector_thread)
 
       else if (i .eq. 3) then
 
          ! Global grid arrays
 
-         deallocate (cell_absorption_opacity)
-         deallocate (cell_scattering_opacity)
-         deallocate (cell_asymmetry)
-         deallocate (cell_opacity)
-         deallocate (cell_albedo)
-         deallocate (cell_scatter_matrix)
-         deallocate (cell_p11_int)
-         deallocate (cell_p12_int)
-         deallocate (cell_p13_int)
-         deallocate (cell_p14_int)
-         deallocate (rfront)
-         deallocate (thetafront)
-         deallocate (thetaplane)
-         deallocate (phifront)
-         deallocate (theta_grid_cos)
-         deallocate (theta_grid_sin)
-         deallocate (theta_grid_tan)
-         deallocate (phi_grid_cos)
-         deallocate (phi_grid_sin)
-         deallocate (cell_volume)
-         deallocate (wavelengths)
-         if (global) deallocate (cell_flow_global)
-         if (latitudinal) deallocate (cell_flow)
-         deallocate (phi_mrw)
-         deallocate (y_mrw)
+         deallocate(cell_absorption_opacity)
+         deallocate(cell_scattering_opacity)
+         deallocate(cell_asymmetry)
+         deallocate(cell_opacity)
+         deallocate(cell_albedo)
+         deallocate(cell_scatter_matrix)
+         deallocate(cell_p11_int)
+         deallocate(cell_p12_int)
+         deallocate(cell_p13_int)
+         deallocate(cell_p14_int)
+         deallocate(rfront)
+         deallocate(thetafront)
+         deallocate(thetaplane)
+         deallocate(phifront)
+         deallocate(theta_grid_cos)
+         deallocate(theta_grid_sin)
+         deallocate(theta_grid_tan)
+         deallocate(phi_grid_cos)
+         deallocate(phi_grid_sin)
+         deallocate(cell_volume)
+         deallocate(wavelengths)
+         if (global) deallocate(cell_flow_global)
+         if (latitudinal) deallocate(cell_flow)
+         deallocate(phi_mrw)
+         deallocate(y_mrw)
 
       end if
 
@@ -3499,6 +3510,8 @@ contains
       logical               :: exist
 
       error = 0._dp
+      pol = 0._dp
+      dpol = 0._dp
 
       ! Stokes error
 
@@ -3725,7 +3738,7 @@ contains
 
       if (global) then
 
-         allocate (transport(3, 0:nr - 1, 0:ntheta - 1, 0:nphi - 1))
+         allocate(transport(3, 0:nr - 1, 0:ntheta - 1, 0:nphi - 1))
          transport = 0._dp
 
          do k = 0, nphi - 1
@@ -3748,7 +3761,7 @@ contains
 
          call write_fits_4D("global.fits", transport, 3, nr, ntheta, nphi)
 
-         deallocate (transport)
+         deallocate(transport)
 
       end if
 
@@ -3756,7 +3769,7 @@ contains
 
          ! Write latitudinal energy transport, normalized to the total emergent flux
 
-         allocate (transport(4, 0:nr - 1, 0:ntheta - 1, 0:nphi - 1))
+         allocate(transport(4, 0:nr - 1, 0:ntheta - 1, 0:nphi - 1))
          transport = 0._dp
 
          do k = 0, nphi - 1
@@ -3777,7 +3790,7 @@ contains
             call write_fits_4D("latitudinal.fits", transport, 4, nr, ntheta, nphi)
          end if
 
-         deallocate (transport)
+         deallocate(transport)
 
       end if
 
@@ -4204,7 +4217,7 @@ contains
 
       call random_seed(size=n)
 
-      allocate (seed(n))
+      allocate(seed(n))
       seed = 0
 
       call system_clock(count=clock)
@@ -4213,7 +4226,7 @@ contains
 
       call random_seed(put=seed)
 
-      deallocate (seed)
+      deallocate(seed)
 
    end subroutine init_random_seed
 
@@ -4372,7 +4385,7 @@ contains
 
       rewind (100)
 
-      allocate (data(line_counter))
+      allocate(data(line_counter))
 
       do j = 1, line_counter
 
@@ -4616,7 +4629,7 @@ contains
       integer(16), intent(in) :: photon
       integer                 :: cell(3), cell_out(3), face(2), next_face(2), ix, iy
       real(dp), intent(in)    :: x_photon, y_photon, z_photon, stokes_peel_in(4)
-      real(dp)                :: x, y, z, face_distance, photon_weight, tau_cell, tau_total, x_im, y_im, det(3), x_new, y_new
+      real(dp)                :: x, y, z, face_distance, photon_weight, tau_cell, tau_total, x_im, y_im, x_new, y_new
       logical                 :: grid_exit
       logical, intent(out)    :: cell_error
 
@@ -4813,13 +4826,13 @@ contains
       integer, intent(in)     :: cell_in(3), face_in(2), thread_id
       integer(16), intent(in) :: photon
       integer                 :: cell(3), cell_out(3), face(2), next_face(2)
-      integer                 :: i, angle_upper, angle_lower, ix, iy
+      integer                 :: ix, iy
       real(dp), intent(in)    :: x_in, y_in, z_in, stokes_peel_in(4), direction_in(3), ref_normal(3)
-      real(dp)                :: x, y, z, face_distance, stokes_out(4), x_im, y_im, phi_old, x_new, y_new
+      real(dp)                :: x, y, z, face_distance, stokes_out(4), x_im, y_im, x_new, y_new
       real(dp)                :: ref_normal_obs(3), ref_north(3), ref_east(3), ref_cross(3)
-      real(dp)                :: tau_cell, tau_total, photon_weight, norm, s2b, c2b, phi_obs
-      real(dp)                :: cos_theta_obs, sin_phi_obs, cos_phi_obs, sin_alpha_obs, cos_alpha_obs, alpha_obs
-      real(dp)                :: stokes_in(4), stokes_rot(4), stokes_obs(4), scatter(16), det(3)
+      real(dp)                :: tau_cell, tau_total, photon_weight, s2b, c2b, phi_obs
+      real(dp)                :: cos_theta_obs, sin_phi_obs, cos_phi_obs, sin_alpha_obs, cos_alpha_obs
+      real(dp)                :: stokes_rot(4), stokes_obs(4), scatter(16), det(3)
       logical, intent(out)    :: cell_error
       logical                 :: grid_exit
 
