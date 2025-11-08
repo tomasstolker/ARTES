@@ -1,5 +1,9 @@
 .PHONY: help all download install clean docs pypi pypi-test
 
+# Important: set the CFITSIO_FOLDER to the
+# folder that contains the CFITSIO library
+CFITSIO_FOLDER = /opt/homebrew/lib/
+
 debug = false
 linux = false
 
@@ -8,16 +12,12 @@ DBG = -Wall -Wextra -pedantic -fimplicit-none -fcheck=all -fdump-core -fbacktrac
 DBG += -Wsurprising -Waliasing -Wunused-parameter -fall-intrinsics -ffree-form -fdump-fortran-optimized -ffpe-trap=invalid,zero
 PAR = -fopenmp -fallow-argument-mismatch -w
 
+LIBS = -L $(CFITSIO_FOLDER) -l cfitsio
+
 ifeq ($(debug),true)
 	FLAGS = -O0 $(PAR) $(DBG)
 else
 	FLAGS = -O3 $(PAR)
-endif
-
-ifeq ($(linux),true)
-	LIBS = -L lib -l cfitsio
-else
-	LIBS = -L lib -l cfitsio.5
 endif
 
 help:
@@ -43,7 +43,6 @@ start:
 	@echo Creating folders...
 	@echo
 	mkdir -p bin/
-	mkdir -p lib/
 	mkdir -p dat/molecules/
 	@echo
 	@echo ----------------------------------------------------
@@ -52,8 +51,6 @@ data:
 	@echo
 	@echo Downloading data...
 	@echo
-	wget -q --show-progress -O lib/libcfitsio.5.dylib https://home.strw.leidenuniv.nl/~stolker/artes/libcfitsio.5.dylib
-	wget -q --show-progress -O lib/libcfitsio.so.3 https://home.strw.leidenuniv.nl/~stolker/artes/libcfitsio.so.3
 	wget -q --show-progress -O dat/molecules/molecules.tar.gz https://home.strw.leidenuniv.nl/~stolker/artes/molecules.tar.gz
 	wget -q --show-progress -O bin/computepart_mac https://home.strw.leidenuniv.nl/~stolker/artes/computepart_mac
 	wget -q --show-progress -O bin/computepart_linux https://home.strw.leidenuniv.nl/~stolker/artes/computepart_linux
