@@ -1,7 +1,7 @@
 bin/*
 lib/*
 src/artes.*.so
-src/_version.py
+artes/_version.py
 dat/molecules/*
 docs/_build
 artes.o
