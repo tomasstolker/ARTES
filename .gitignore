@@ -1,8 +1,8 @@
 bin/*
 lib/*
 src/artes.*.so
+src/_version.py
 dat/molecules/*
 docs/_build
 artes.o
 *.py[cod]
-setup.py
